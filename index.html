@@ -160,96 +160,6 @@
             <!-- TAB 2: AYO MAIN! (IDE KENCAN) -->
             <section id="tab-dating" class="tab-content hidden space-y-6">
               
-<html lang="id" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajakin Jalan Yuk! 💕</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Poppins & Fredoka -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti for celebrations -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        fredoka: ['Fredoka', 'sans-serif'],
-                        poppins: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        blush: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            200: '#fecdd3',
-                            300: '#fda4af',
-                            400: '#fb7185',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                        },
-                        cream: '#fffbfb',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #ffe4e6 0%, #fae8ff 50%, #e0f2fe 100%);
-            min-height: 100vh;
-        }
-        .heading-font {
-            font-family: 'Fredoka', cursive, sans-serif;
-        }
-        /* Custom animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(3deg); }
-        }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes pulse-soft {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .animate-pulse-soft {
-            animation: pulse-soft 2s ease-in-out infinite;
-        }
-        @keyframes bounce-short {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        .animate-bounce-short {
-            animation: bounce-short 0.6s ease-in-out infinite;
-        }
-        /* Glassmorphism card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.3);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #fda4af;
-            border-radius: 9999px;
-        }
-    </style>
-</head>
-<body class="flex flex-col items-center justify-center p-4 sm:p-6 text-gray-800">
-
     <!-- Floating Background Decor Elements -->
     <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div class="absolute top-10 left-10 text-pink-300 text-3xl animate-float opacity-70"><i class="fas fa-heart"></i></div>
@@ -541,6 +451,7 @@
 
     <!-- JavaScript Application Logic -->
     <script>
+        (() => {
         // Application State Data
         let appData = {
             activity: 'Nonton Bioskop 🎬',
@@ -804,9 +715,20 @@
                 toast.classList.add('translate-y-24', 'opacity-0');
             }, 3000);
         }
+
+        window.goToSlide = goToSlide;
+        window.handleRejectClick = handleRejectClick;
+        window.handleRejectHover = handleRejectHover;
+        window.saveActivityAndNext = saveActivityAndNext;
+        window.saveDateTimeAndNext = saveDateTimeAndNext;
+        window.sendToWhatsApp = sendToWhatsApp;
+        window.copyConfirmationLink = copyConfirmationLink;
+        window.resetAppToStart = resetAppToStart;
+        window.triggerConfetti = triggerConfetti;
+        window.triggerMassiveConfetti = triggerMassiveConfetti;
+        window.showToast = showToast;
+    })();
     </script>
-</body>
-</html>
             </section>
 
             <!-- TAB 3: POHON KENANGAN -->
@@ -1016,23 +938,48 @@
     <!-- JavaScript Application Logic -->
     <script>
         // State Management
-        let appData = {
-            name1: 'Sayang',
-            name2: 'Manis',
-            startDate: '2023-01-01',
-            relationshipStatus: 'Pacaran',
-            activeGameType: 'quiz',
-            lastVisited: new Date().toISOString(),
-            photos: [
-                { id: 1, url: 'https://picsum.photos/id/1025/400/300', date: '2023-02-14', caption: 'Valentine pertama kita berdua 🌹' },
-                { id: 2, url: 'https://picsum.photos/id/338/400/300', date: '2023-06-20', caption: 'Liburan seru ke pantai sore hari 🌊' }
-            ],
-            questions: [
-                { id: 1, author: 'Sayang', text: 'Apa hal paling lucu yang aku lakukan minggu ini?', answer: 'Waktu kamu tidur sambil ngigo minta es krim! 😂' }
-            ]
-        };
+        const STORAGE_KEY = 'couple_space_data';
 
+        function getDefaultAppData() {
+            return {
+                name1: 'Sayang',
+                name2: 'Manis',
+                startDate: '2023-01-01',
+                relationshipStatus: 'Pacaran',
+                activeGameType: 'quiz',
+                lastVisited: new Date().toISOString(),
+                photos: [
+                    { id: 1, url: 'https://picsum.photos/id/1025/400/300', date: '2023-02-14', caption: 'Valentine pertama kita berdua 🌹' },
+                    { id: 2, url: 'https://picsum.photos/id/338/400/300', date: '2023-06-20', caption: 'Liburan seru ke pantai sore hari 🌊' }
+                ],
+                questions: [
+                    { id: 1, author: 'Sayang', text: 'Apa hal paling lucu yang aku lakukan minggu ini?', answer: 'Waktu kamu tidur sambil ngigo minta es krim! 😂' }
+                ]
+            };
+        }
+
+        let appData = getDefaultAppData();
         let currentLoggedInAccount = null;
+
+        function loadAppData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return getDefaultAppData();
+
+            try {
+                return { ...getDefaultAppData(), ...JSON.parse(saved) };
+            } catch (error) {
+                console.error('Gagal memuat data pasangan:', error);
+                return getDefaultAppData();
+            }
+        }
+
+        function syncAppFromStorage() {
+            const savedData = loadAppData();
+            appData = savedData;
+            if (currentLoggedInAccount) {
+                initApp();
+            }
+        }
 
         // Quotes collection
         const dailyQuotes = [
@@ -1074,14 +1021,7 @@
 
         // Load data from localStorage on start
         window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('couple_space_data');
-            if (saved) {
-                try {
-                    appData = JSON.parse(saved);
-                } catch (e) {
-                    console.error(e);
-                }
-            }
+            appData = loadAppData();
 
             const loggedAcc = localStorage.getItem('logged_account');
             const isLoggedIn = localStorage.getItem('is_logged_in') === 'true';
@@ -1099,6 +1039,12 @@
             }
         });
 
+        window.addEventListener('storage', (event) => {
+            if (event.key === STORAGE_KEY) {
+                syncAppFromStorage();
+            }
+        });
+
         function handleLogin(event) {
             event.preventDefault();
             const account = document.getElementById('loginAccount').value;
@@ -1109,6 +1055,7 @@
                 return;
             }
 
+            appData = loadAppData();
             currentLoggedInAccount = account;
             localStorage.setItem('is_logged_in', 'true');
             localStorage.setItem('logged_account', account);
@@ -1128,7 +1075,8 @@
         }
 
         function saveData() {
-            localStorage.setItem('couple_space_data', JSON.stringify(appData));
+            appData.lastVisited = new Date().toISOString();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
         }
 
         function initApp() {
