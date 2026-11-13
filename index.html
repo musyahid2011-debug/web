@@ -159,21 +159,654 @@
 
             <!-- TAB 2: AYO MAIN! (IDE KENCAN) -->
             <section id="tab-dating" class="tab-content hidden space-y-6">
-                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-xl mx-auto text-center">
-                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold uppercase tracking-wider">Generator Ide Kencan</span>
-                    <h2 class="text-2xl font-bold text-slate-800 mt-3 mb-2">Ayo Main & Kencan Seru! 🎲</h2>
-                    <p class="text-xs text-slate-500 mb-6">Putar kartu untuk menemukan ide aktivitas acak yang bisa kalian lakukan hari ini.</p>
+              
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajakin Jalan Yuk! 💕</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins & Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        blush: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                        },
+                        cream: '#fffbfb',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffe4e6 0%, #fae8ff 50%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        .heading-font {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        /* Custom animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2s ease-in-out infinite;
+        }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 0.6s ease-in-out infinite;
+        }
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fda4af;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 sm:p-6 text-gray-800">
 
-                    <div id="activityCard" class="bg-gradient-to-br from-rose-500 to-pink-600 text-white p-8 rounded-3xl shadow-lg mb-6 transition-transform duration-200">
-                        <div id="activityIcon" class="text-5xl mb-3">🍿</div>
-                        <h3 id="activityTitle" class="text-xl font-bold mb-2">Maraton Film Horor</h3>
-                        <p id="activityDesc" class="text-sm text-rose-100">Pilih film paling seram, matikan lampu, dan deketan di sofa!</p>
-                    </div>
+    <!-- Floating Background Decor Elements -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute top-10 left-10 text-pink-300 text-3xl animate-float opacity-70"><i class="fas fa-heart"></i></div>
+        <div class="absolute top-20 right-16 text-purple-300 text-4xl animate-float" style="animation-delay: 1s;"><i class="fas fa-star"></i></div>
+        <div class="absolute bottom-16 left-20 text-rose-300 text-3xl animate-float" style="animation-delay: 2s;"><i class="fas fa-kiss-wink-heart"></i></div>
+        <div class="absolute bottom-24 right-24 text-pink-400 text-2xl animate-float" style="animation-delay: 1.5s;"><i class="fas fa-sparkles"></i></div>
+    </div>
 
-                    <button onclick="getRandomActivity()" class="w-full py-3.5 bg-slate-900 text-white font-semibold rounded-2xl shadow-lg hover:bg-slate-800 transition active:scale-95 text-sm">
-                        <i class="fa-solid fa-shuffle mr-2"></i> Acak Ide Aktivitas Lain
+    <!-- Main Container -->
+    <main class="w-full max-w-lg z-10 my-auto">
+        <div id="app-card" class="glass-card shadow-2xl rounded-3xl p-6 sm:p-8 transition-all duration-500 relative overflow-hidden">
+            
+            <!-- SLIDE 1: Ajakan Main -->
+            <section id="slide-1" class="slide space-y-6 text-center transition-all duration-300">
+                <div class="relative w-32 h-32 mx-auto mb-2 animate-float">
+                    <img id="slide1-img" src="https://placehold.co/200x200/ffe4e6/e11d48?text=🥺" alt="Cute Icon" class="w-full h-full object-cover rounded-full shadow-md border-4 border-white">
+                </div>
+                
+                <div class="space-y-2">
+                    <span class="inline-block bg-pink-100 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-1">Undangan Eksklusif ✨</span>
+                    <h1 class="heading-font text-3xl sm:text-4xl font-bold text-gray-800">Hai kamu! Mau enggak jalan bareng aku?</h1>
+                    <p class="text-gray-600 text-sm sm:text-base">Udah lama nih gak quality time seru bareng. Luangin waktu sebentar yuk! 🥰</p>
+                </div>
+
+                <!-- Alert/Peringatan Lucu Box -->
+                <div id="reject-warning-box" class="hidden bg-rose-50 border-2 border-rose-200 text-rose-700 px-4 py-3 rounded-2xl text-sm font-medium animate-bounce-short flex items-center justify-center gap-2 shadow-inner">
+                    <i class="fas fa-exclamation-circle text-lg"></i>
+                    <span id="reject-msg-text">Eitss, tombol "Enggak" itu cuma pajangan lho! 😉</span>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <button onclick="goToSlide(2)" class="w-full sm:w-1/2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-pink-500/30 transform hover:-translate-y-1 transition-all duration-200 flex items-center justify-center gap-2 text-lg">
+                        <i class="fas fa-heart"></i> Mau Banget!
+                    </button>
+                    <button id="btn-no" onclick="handleRejectClick()" onmouseover="handleRejectHover()" class="w-full sm:w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3.5 px-6 rounded-2xl shadow-sm transition-all duration-200 flex items-center justify-center gap-2 text-lg border border-gray-200">
+                        <i class="fas fa-times"></i> <span id="btn-no-text">Enggak</span>
                     </button>
                 </div>
+            </section>
+
+            <!-- SLIDE 2: Pilihan Aktivitas -->
+            <section id="slide-2" class="slide hidden space-y-6 transition-all duration-300">
+                <div class="text-center space-y-1">
+                    <span class="inline-block bg-purple-100 text-purple-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Pilih Aktivitas 🎯</span>
+                    <h2 class="heading-font text-2xl sm:text-3xl font-bold text-gray-800">Mau <i>quality time</i> ngapain nih?</h2>
+                    <p class="text-gray-600 text-sm">Pilih salah satu kegiatan seru di bawah ini ya:</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 sm:gap-3.5 max-h-[360px] overflow-y-auto pr-1">
+                    <!-- Option 1 -->
+                    <label class="activity-card flex items-center p-4 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/60 hover:bg-pink-50/50 cursor-pointer transition-all shadow-sm group">
+                        <input type="radio" name="activity" value="Nonton Bioskop 🎬" class="hidden peer" checked>
+                        <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition-transform shadow-sm">
+                            🎬
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 group-hover:text-pink-600 transition-colors">Nonton Bioskop</h3>
+                            <p class="text-xs text-gray-500">Maraton film seru sambil cium wangi popcorn butter.</p>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 peer-checked:border-pink-500 peer-checked:bg-pink-500 flex items-center justify-center text-white text-xs transition-all">
+                            <i class="fas fa-check opacity-0 peer-checked:opacity-100"></i>
+                        </div>
+                    </label>
+
+                    <!-- Option 2 -->
+                    <label class="activity-card flex items-center p-4 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/60 hover:bg-pink-50/50 cursor-pointer transition-all shadow-sm group">
+                        <input type="radio" name="activity" value="Makan Berdua 🍽️" class="hidden peer">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition-transform shadow-sm">
+                            🍽️
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 group-hover:text-pink-600 transition-colors">Makan Berdua</h3>
+                            <p class="text-xs text-gray-500">Kulineran tempat enak atau dinner romantis.</p>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 peer-checked:border-pink-500 peer-checked:bg-pink-500 flex items-center justify-center text-white text-xs transition-all">
+                            <i class="fas fa-check opacity-0 peer-checked:opacity-100"></i>
+                        </div>
+                    </label>
+
+                    <!-- Option 3 -->
+                    <label class="activity-card flex items-center p-4 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/60 hover:bg-pink-50/50 cursor-pointer transition-all shadow-sm group">
+                        <input type="radio" name="activity" value="Jajan-jajan 🧋" class="hidden peer">
+                        <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition-transform shadow-sm">
+                            🧋
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 group-hover:text-pink-600 transition-colors">Jajan-jajan</h3>
+                            <p class="text-xs text-gray-500">Berburu boba, es krim, atau street food kekinian.</p>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 peer-checked:border-pink-500 peer-checked:bg-pink-500 flex items-center justify-center text-white text-xs transition-all">
+                            <i class="fas fa-check opacity-0 peer-checked:opacity-100"></i>
+                        </div>
+                    </label>
+
+                    <!-- Option 4 -->
+                    <label class="activity-card flex items-center p-4 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/60 hover:bg-pink-50/50 cursor-pointer transition-all shadow-sm group">
+                        <input type="radio" name="activity" value="Momotoran 🛵" class="hidden peer">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition-transform shadow-sm">
+                            🛵
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 group-hover:text-pink-600 transition-colors">Momotoran</h3>
+                            <p class="text-xs text-gray-500">Keliling kota angin-anginan santai naik motor.</p>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 peer-checked:border-pink-500 peer-checked:bg-pink-500 flex items-center justify-center text-white text-xs transition-all">
+                            <i class="fas fa-check opacity-0 peer-checked:opacity-100"></i>
+                        </div>
+                    </label>
+
+                    <!-- Option 5 -->
+                    <label class="activity-card flex items-center p-4 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/60 hover:bg-pink-50/50 cursor-pointer transition-all shadow-sm group">
+                        <input type="radio" name="activity" value="Olahraga / Sepor 🏀" class="hidden peer">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition-transform shadow-sm">
+                            🏀
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 group-hover:text-pink-600 transition-colors">Olahraga / Sepor</h3>
+                            <p class="text-xs text-gray-500">Jogging santai, sepedaan, atau olahraga seru lainnya.</p>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 peer-checked:border-pink-500 peer-checked:bg-pink-500 flex items-center justify-center text-white text-xs transition-all">
+                            <i class="fas fa-check opacity-0 peer-checked:opacity-100"></i>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="goToSlide(1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-5 rounded-2xl transition-all flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </button>
+                    <button onclick="saveActivityAndNext()" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg shadow-pink-500/30 transition-all flex items-center gap-2">
+                        Lanjut <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: Waktu & Tanggal -->
+            <section id="slide-3" class="slide hidden space-y-6 transition-all duration-300">
+                <div class="text-center space-y-1">
+                    <span class="inline-block bg-blue-100 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Jadwal Acara 📅</span>
+                    <h2 class="heading-font text-2xl sm:text-3xl font-bold text-gray-800">Kapan nih kita jalan?</h2>
+                    <p class="text-gray-600 text-sm">Tentukan tanggal dan jam janjian kita ya!</p>
+                </div>
+
+                <div class="space-y-4 bg-white/70 p-5 rounded-3xl border border-pink-100 shadow-sm">
+                    <!-- Date Input -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+                            <i class="fas fa-calendar-alt text-pink-500"></i> Tanggal Kencan
+                        </label>
+                        <input type="date" id="input-date" class="w-full bg-white border-2 border-gray-200 focus:border-pink-500 rounded-2xl p-3.5 text-gray-700 font-medium outline-none transition-all shadow-sm">
+                    </div>
+
+                    <!-- Time Input -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+                            <i class="fas fa-clock text-pink-500"></i> Jam Berapa
+                        </label>
+                        <input type="time" id="input-time" value="15:30" class="w-full bg-white border-2 border-gray-200 focus:border-pink-500 rounded-2xl p-3.5 text-gray-700 font-medium outline-none transition-all shadow-sm">
+                    </div>
+
+                    <!-- Catatan Tambahan (Opsional) -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+                            <i class="fas fa-comment-dots text-pink-500"></i> Catatan/Lokasi (Opsional)
+                        </label>
+                        <input type="text" id="input-note" placeholder="Contoh: Jemput di rumah ya / Di Mall XYZ" class="w-full bg-white border-2 border-gray-200 focus:border-pink-500 rounded-2xl p-3.5 text-gray-700 font-medium outline-none transition-all shadow-sm text-sm">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="goToSlide(2)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-5 rounded-2xl transition-all flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </button>
+                    <button onclick="saveDateTimeAndNext()" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-8 rounded-2xl shadow-lg shadow-pink-500/30 transition-all flex items-center gap-2">
+                        Konfirmasi <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: Ringkasan & WhatsApp Link Generator -->
+            <section id="slide-4" class="slide hidden space-y-6 transition-all duration-300">
+                <div class="text-center space-y-1">
+                    <span class="inline-block bg-emerald-100 text-emerald-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Berhasil Disusun ✨</span>
+                    <h2 class="heading-font text-2xl sm:text-3xl font-bold text-gray-800">Yeay! Rencana Kita Beres!</h2>
+                    <p class="text-gray-600 text-sm">Berikut ringkasan jadwal kencan kita:</p>
+                </div>
+
+                <!-- Summary Card -->
+                <div class="bg-gradient-to-br from-pink-50 to-purple-50 p-5 rounded-3xl border-2 border-pink-200/60 shadow-inner space-y-4">
+                    <div class="flex items-center gap-3.5 border-b border-pink-200/50 pb-3">
+                        <div class="w-10 h-10 rounded-xl bg-pink-500 text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Aktivitas Pilihan</p>
+                            <h4 id="summary-activity" class="font-bold text-gray-800 text-lg">Nonton Bioskop 🎬</h4>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white/80 p-3 rounded-2xl border border-pink-100 shadow-sm">
+                            <p class="text-xs text-gray-400 font-medium flex items-center gap-1"><i class="fas fa-calendar-day text-pink-500"></i> Tanggal</p>
+                            <p id="summary-date" class="font-bold text-gray-800 text-sm mt-1">Minggu, 16 Nov 2026</p>
+                        </div>
+                        <div class="bg-white/80 p-3 rounded-2xl border border-pink-100 shadow-sm">
+                            <p class="text-xs text-gray-400 font-medium flex items-center gap-1"><i class="fas fa-clock text-pink-500"></i> Jam</p>
+                            <p id="summary-time" class="font-bold text-gray-800 text-sm mt-1">15:30 WIB</p>
+                        </div>
+                    </div>
+
+                    <div id="summary-note-container" class="bg-white/80 p-3 rounded-2xl border border-pink-100 shadow-sm hidden">
+                        <p class="text-xs text-gray-400 font-medium flex items-center gap-1"><i class="fas fa-sticky-note text-pink-500"></i> Catatan</p>
+                        <p id="summary-note" class="font-medium text-gray-700 text-xs mt-1"></p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3 pt-1">
+                    <button onclick="sendToWhatsApp()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 text-base">
+                        <i class="fab fa-whatsapp text-xl"></i> Kirim Rencana ke WhatsApp
+                    </button>
+                    <button onclick="copyConfirmationLink()" class="w-full bg-white hover:bg-pink-50 text-gray-700 font-semibold py-3 px-6 rounded-2xl border-2 border-gray-200 hover:border-pink-300 transition-all flex items-center justify-center gap-2 text-sm shadow-sm">
+                        <i class="fas fa-copy text-pink-500"></i> Salin Link Konfirmasi
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-start pt-2">
+                    <button onclick="goToSlide(3)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Edit Jadwal
+                    </button>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: Special Remote Viewer Mode (Opened from WhatsApp Link) -->
+            <section id="slide-5" class="slide hidden space-y-6 text-center transition-all duration-300">
+                <div class="relative w-28 h-28 mx-auto mb-2 animate-float">
+                    <img src="https://placehold.co/200x200/fecdd3/e11d48?text=💖" alt="Love Celebration" class="w-full h-full object-cover rounded-full shadow-lg border-4 border-white">
+                </div>
+
+                <div class="space-y-2">
+                    <span class="inline-block bg-pink-100 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Konfirmasi Kencan Diterima! 💌</span>
+                    <h2 class="heading-font text-3xl sm:text-4xl font-bold text-gray-800">Yeeaayy, Janji Temu Disetujui!</h2>
+                    <p class="text-gray-600 text-sm">Undangan kencan ini sudah resmi dan siap dilaksanakan. Jangan sampai lupa ya!</p>
+                </div>
+
+                <!-- Received Details Box -->
+                <div class="bg-gradient-to-br from-pink-50 to-purple-50 p-5 rounded-3xl border-2 border-pink-200 shadow-inner text-left space-y-3">
+                    <div class="flex items-center gap-3 border-b border-pink-200/60 pb-2.5">
+                        <span class="text-2xl" id="viewer-icon">🎬</span>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">Aktivitas</p>
+                            <h4 id="viewer-activity" class="font-bold text-gray-800 text-base">Nonton Bioskop</h4>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                            <span class="text-xs text-gray-400 block"><i class="fas fa-calendar-alt text-pink-500"></i> Tanggal</span>
+                            <span id="viewer-date" class="font-bold text-gray-700">16 Nov 2026</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 block"><i class="fas fa-clock text-pink-500"></i> Waktu</span>
+                            <span id="viewer-time" class="font-bold text-gray-700">15:30 WIB</span>
+                        </div>
+                    </div>
+                    <div id="viewer-note-box" class="pt-1 border-t border-pink-200/60 hidden">
+                        <span class="text-xs text-gray-400 block"><i class="fas fa-sticky-note text-pink-500"></i> Catatan</span>
+                        <span id="viewer-note" class="font-medium text-gray-700 text-xs"></span>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex flex-col gap-3">
+                    <button onclick="triggerMassiveConfetti()" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg shadow-pink-500/30 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-gift"></i> Rayakan Bersama 🎉
+                    </button>
+                    <button onclick="resetAppToStart()" class="text-xs text-gray-500 hover:text-pink-600 underline font-medium py-1">
+                        Buat Undangan Sendiri
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Notification Toast / Custom Message Box -->
+    <div id="toast-notification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 translate-y-24 opacity-0 transition-all duration-300 z-50 bg-gray-900/90 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 backdrop-blur-md">
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400 text-lg"></i>
+        <span id="toast-msg" class="text-sm font-medium">Link berhasil disalin!</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Application State Data
+        let appData = {
+            activity: 'Nonton Bioskop 🎬',
+            date: '',
+            time: '15:00',
+            note: ''
+        };
+
+        // Reject button playful interaction variables
+        let rejectClickCount = 0;
+        const rejectMessages = [
+            "Eitss, tombol 'Enggak' itu cuma pajangan lho! 😉",
+            "Yakin gak mau? Coba dipikirin lagi dong.. 🥺",
+            "Duh, tombolnya rusak nih, yuk klik 'Mau Banget!' aja! 💖",
+            "Gak boleh nolak! Udah fix harus mau! 😤💕",
+            "Pilih 'Mau Banget!' sekarang atau aku cemberut nih! 😾"
+        ];
+
+        const rejectImages = [
+            "https://placehold.co/200x200/ffe4e6/e11d48?text=🥺",
+            "https://placehold.co/200x200/fed7aa/c2410c?text=🧐",
+            "https://placehold.co/200x200/fbcfe8/be185d?text=😭",
+            "https://placehold.co/200x200/e0e7ff/4338ca?text=😤",
+            "https://placehold.co/200x200/fef08a/a16207?text=🥰"
+        ];
+
+        // Initialize on Window Load
+        window.onload = function() {
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateStr = tomorrow.toISOString().split('T')[0];
+            document.getElementById('input-date').value = dateStr;
+            appData.date = dateStr;
+
+            // Check if URL contains query parameters for shared confirmation view
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedAct = urlParams.get('act');
+            const sharedDate = urlParams.get('date');
+            const sharedTime = urlParams.get('time');
+            const sharedNote = urlParams.get('note');
+
+            if (sharedAct) {
+                // Load data into slide 5 and show slide 5
+                document.getElementById('viewer-activity').innerText = decodeURIComponent(sharedAct);
+                document.getElementById('viewer-icon').innerText = decodeURIComponent(sharedAct).slice(-2);
+                document.getElementById('viewer-date').innerText = sharedDate ? decodeURIComponent(sharedDate) : '-';
+                document.getElementById('viewer-time').innerText = sharedTime ? decodeURIComponent(sharedTime) : '-';
+                
+                if (sharedNote) {
+                    document.getElementById('viewer-note').innerText = decodeURIComponent(sharedNote);
+                    document.getElementById('viewer-note-box').classList.remove('hidden');
+                }
+
+                goToSlide(5);
+                triggerMassiveConfetti();
+            }
+        };
+
+        // Slide Navigation Handler
+        function goToSlide(slideNum) {
+            // Hide all slides
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.add('hidden'));
+
+            // Show target slide
+            const targetSlide = document.getElementById(`slide-${slideNum}`);
+            if (targetSlide) {
+                targetSlide.classList.remove('hidden');
+            }
+
+            // Scroll window top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Handle Reject Button Click / Hover
+        function handleRejectClick() {
+            rejectClickCount++;
+            const warningBox = document.getElementById('reject-warning-box');
+            const msgText = document.getElementById('reject-msg-text');
+            const imgEl = document.getElementById('slide1-img');
+            const btnNoText = document.getElementById('btn-no-text');
+
+            warningBox.classList.remove('hidden');
+            
+            const msgIdx = (rejectClickCount - 1) % rejectMessages.length;
+            msgText.innerText = rejectMessages[msgIdx];
+            imgEl.src = rejectImages[msgIdx];
+
+            if (rejectClickCount >= 3) {
+                btnNoText.innerText = "Mau Aja Dah";
+                // Make the no button shrink or jump randomly
+                const btnNo = document.getElementById('btn-no');
+                btnNo.style.transform = `scale(${Math.max(0.6, 1 - (rejectClickCount * 0.1))})`;
+            }
+
+            if (rejectClickCount >= 5) {
+                // Auto redirect to slide 2 after stubborn clicking
+                showToast("Keputusan dipaksa ke 'Mau': Yeay! Berhasil! 🎉", "success");
+                setTimeout(() => {
+                    goToSlide(2);
+                }, 800);
+            }
+        }
+
+        function handleRejectHover() {
+            if (rejectClickCount >= 2) {
+                const btnNo = document.getElementById('btn-no');
+                const randomX = (Math.random() - 0.5) * 60;
+                const randomY = (Math.random() - 0.5) * 30;
+                btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            }
+        }
+
+        // Save Activity & Proceed
+        function saveActivityAndNext() {
+            const selectedRadio = document.querySelector('input[name="activity"]:checked');
+            if (selectedRadio) {
+                appData.activity = selectedRadio.value;
+            }
+            goToSlide(3);
+        }
+
+        // Save Date/Time & Proceed to Summary
+        function saveDateTimeAndNext() {
+            const dateVal = document.getElementById('input-date').value;
+            const timeVal = document.getElementById('input-time').value;
+            const noteVal = document.getElementById('input-note').value;
+
+            if (!dateVal || !timeVal) {
+                showToast("Mohon isi tanggal dan waktu kencannya ya! ⏰", "error");
+                return;
+            }
+
+            appData.date = dateVal;
+            appData.time = timeVal;
+            appData.note = noteVal;
+
+            // Populate Summary
+            document.getElementById('summary-activity').innerText = appData.activity;
+            
+            // Format readable date
+            const dateObj = new Date(dateVal);
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            document.getElementById('summary-date').innerText = dateObj.toLocaleDateString('id-ID', options);
+            document.getElementById('summary-time').innerText = appData.time + ' WIB';
+
+            const noteContainer = document.getElementById('summary-note-container');
+            if (appData.note.trim() !== '') {
+                document.getElementById('summary-note').innerText = appData.note;
+                noteContainer.classList.remove('hidden');
+            } else {
+                noteContainer.classList.add('hidden');
+            }
+
+            goToSlide(4);
+            triggerConfetti();
+        }
+
+        // Generate Shareable Link
+        function generateShareableURL() {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const params = new URLSearchParams({
+                act: appData.activity,
+                date: document.getElementById('summary-date').innerText,
+                time: appData.time + ' WIB',
+                note: appData.note
+            });
+            return `${baseUrl}?${params.toString()}`;
+        }
+
+        // Send to WhatsApp Function
+        function sendToWhatsApp() {
+            const link = generateShareableURL();
+            const message = `Halo! Aku mau ngajak kamu kencan nih. 💕\n\n*Aktivitas:* ${appData.activity}\n*Tanggal:* ${document.getElementById('summary-date').innerText}\n*Waktu:* ${appData.time} WIB${appData.note ? '\n*Catatan:* ' + appData.note : ''}\n\nBuka link konfirmasi interaktif di sini ya:\n${link}`;
+            
+            const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+            showToast("Mengarahkan ke WhatsApp... 📱", "success");
+        }
+
+        // Copy Confirmation Link to Clipboard
+        function copyConfirmationLink() {
+            const link = generateShareableURL();
+            
+            // Fallback clipboard method for iframe restrictions
+            const textArea = document.createElement("textarea");
+            textArea.value = link;
+            textArea.style.position = "fixed";  // Avoid scrolling to bottom
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast("Link konfirmasi berhasil disalin! 📋", "success");
+                } else {
+                    showToast("Gagal menyalin link.", "error");
+                }
+            } catch (err) {
+                showToast("Tidak dapat menyalin otomatis.", "error");
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        // Reset App to Start
+        function resetAppToStart() {
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+
+        // Confetti Effects
+        function triggerConfetti() {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f43f5e', '#ec4899', '#8b5cf6', '#3b82f6']
+            });
+        }
+
+        function triggerMassiveConfetti() {
+            var duration = 2.5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        // Toast Notification Helper
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast-notification');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            if (type === 'success') {
+                toastIcon.className = "fas fa-check-circle text-emerald-400 text-lg";
+            } else {
+                toastIcon.className = "fas fa-exclamation-circle text-rose-400 text-lg";
+            }
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
             </section>
 
             <!-- TAB 3: POHON KENANGAN -->
