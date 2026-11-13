@@ -3,748 +3,878 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jalan Bareng Yuk? ✨</title>
-    <!-- Tailwind CSS -->
+    <title>Ruang Cinta Kita - Aplikasi Romantis Pasangan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Quicksand & Plus Jakarta Sans untuk nuansa manis & modern -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
-    <!-- Canvas Confetti untuk perayaan di slide konfirmasi -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        display: ['"Quicksand"', 'sans-serif'],
-                    },
-                    colors: {
-                        pastel: {
-                            pink: '#FFE4E6',
-                            rose: '#FB7185',
-                            peach: '#FFEDD5',
-                            cream: '#FFFBEB',
-                            lavender: '#F3E8FF',
-                            mint: '#DCFCE7',
-                        }
-                    },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'wiggle': 'wiggle 0.5s ease-in-out infinite',
-                        'pop': 'pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-                        'fade-slide': 'fadeSlide 0.4s ease-out forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        wiggle: {
-                            '0%, 100%': { transform: 'rotate(-4deg)' },
-                            '50%': { transform: 'rotate(4deg)' },
-                        },
-                        pop: {
-                            '0%': { opacity: '0', transform: 'scale(0.75)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
-                        },
-                        fadeSlide: {
-                            '0%': { opacity: '0', transform: 'translateY(16px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Latar belakang gradasi pastel lembut dengan dekorasi mengambang */
         body {
-            background: linear-gradient(135deg, #FFF1F2 0%, #FFF7ED 50%, #F5F3FF 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fff1f2 0%, #fce7f3 50%, #f3e8ff 100%);
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
-        /* Gaya kartu tiket berlubang di sisi kiri dan kanan */
-        .ticket-cutout {
-            position: relative;
+        .font-script {
+            font-family: 'Dancing Script', cursive;
         }
-        .ticket-cutout::before,
-        .ticket-cutout::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            background-color: #FFF5F5;
-            border-radius: 9999px;
-            top: 50%;
-            transform: translateY(-50%);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
-        .ticket-cutout::before {
-            left: -12px;
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        .ticket-cutout::after {
-            right: -12px;
-        }
-
-        /* Kustomisasi scrollbar halus */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FDA4AF;
-            border-radius: 9999px;
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="flex items-center justify-center p-4 sm:p-6 text-slate-700 selection:bg-rose-200 selection:text-rose-900">
+<body class="text-slate-700 flex flex-col">
 
-    <!-- Elemen Dekorasi Latar Belakang -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div class="absolute top-10 left-8 text-3xl opacity-40 animate-float">☁️</div>
-        <div class="absolute top-24 right-12 text-2xl opacity-40 animate-float" style="animation-delay: 1s;">✨</div>
-        <div class="absolute bottom-16 left-12 text-2xl opacity-40 animate-float" style="animation-delay: 1.5s;">🌸</div>
-        <div class="absolute bottom-24 right-10 text-3xl opacity-40 animate-float" style="animation-delay: 0.5s;">💖</div>
-    </div>
-
-    <!-- Kontainer Utama Aplikasi -->
-    <main class="relative z-10 w-full max-w-md bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(251,113,133,0.16)] border border-white p-6 sm:p-8 transition-all duration-300">
+    <!-- ==================== MAIN APPLICATION ==================== -->
+    <div id="mainApp" class="hidden min-h-screen flex flex-col">
         
-        <!-- Indikator Progress Atas (Sembunyikan jika mode tampilan link konfirmasi) -->
-        <div id="progress-container" class="mb-6">
-            <div class="flex justify-between items-center text-xs font-semibold text-rose-400 mb-2">
-                <span id="step-label">Langkah 1 dari 4</span>
-                <span id="step-emoji">💌 Ajakan</span>
-            </div>
-            <div class="w-full h-2.5 bg-rose-100 rounded-full overflow-hidden">
-                <div id="progress-bar" class="h-full bg-gradient-to-r from-rose-400 to-orange-300 rounded-full transition-all duration-500 ease-out" style="width: 25%;"></div>
-            </div>
-        </div>
-
-        <!-- ==================== SLIDE 1: AJAKAN MAIN ==================== -->
-        <section id="slide-1" class="slide-section animate-fade-slide text-center">
-            <div class="w-24 h-24 mx-auto mb-5 bg-gradient-to-tr from-rose-100 to-orange-100 rounded-full flex items-center justify-center shadow-inner animate-float">
-                <span class="text-5xl">🥺👉👈</span>
-            </div>
-            
-            <span class="inline-block px-3.5 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-bold tracking-wide mb-3">
-                UNDANGAN SPESIAL ✨
-            </span>
-            
-            <h1 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 leading-tight mb-3">
-                Hai! Jalan bareng yuk?
-            </h1>
-            
-            <p class="text-slate-500 text-sm sm:text-base leading-relaxed mb-8">
-                Lagi bosen nih di rumah terus. Keluar sebentar cari angin, jajan, atau seru-seruan bareng aku yuk! Gimana, gas nggak?
-            </p>
-
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <button onclick="handleYes()" class="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-base shadow-lg shadow-rose-200 hover:shadow-rose-300 transform hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer">
-                    Mau! 💖
-                </button>
-                <button onclick="showForceModal()" class="py-3.5 px-6 rounded-2xl bg-slate-100 hover:bg-slate-200/80 text-slate-600 font-semibold text-base transform active:scale-95 transition-all cursor-pointer">
-                    Enggak ah 🙅‍♂️
-                </button>
-            </div>
-        </section>
-
-        <!-- ==================== SLIDE 2: PILIH AKTIVITAS ==================== -->
-        <section id="slide-2" class="slide-section hidden animate-fade-slide">
-            <div class="text-center mb-6">
-                <span class="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-xs font-bold mb-2">
-                    YEAY! ASIK! 🎉
-                </span>
-                <h2 class="font-display text-2xl font-bold text-slate-800">
-                    Kita mau ngapain nih?
-                </h2>
-                <p class="text-slate-500 text-sm mt-1">
-                    Pilih satu kegiatan yang paling kamu pengenin sekarang!
-                </p>
-            </div>
-
-            <!-- Daftar Kartu Pilihan Aktivitas -->
-            <div class="space-y-3 mb-6" id="activity-list">
-                <button onclick="selectActivity('Nonton Bioskop', '🎬')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-rose-100/80 bg-white hover:border-rose-400 hover:bg-rose-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                        🎬
+        <!-- Top Header -->
+        <header class="bg-white/70 backdrop-blur-md sticky top-0 z-30 border-b border-rose-100 shadow-sm">
+            <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-rose-500 to-pink-500 text-white rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-heart-pulse"></i>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800 group-hover:text-rose-600 transition-colors">Nonton Bioskop</h3>
-                        <p class="text-xs text-slate-400">Nonton film seru sambil ngemil popcorn</p>
-                    </div>
-                    <span class="text-rose-300 group-hover:text-rose-500 group-hover:translate-x-1 transition-all font-bold">→</span>
-                </button>
-
-                <button onclick="selectActivity('Makan Berdua', '🍽️')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-orange-100/80 bg-white hover:border-orange-400 hover:bg-orange-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                        🍽️
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800 group-hover:text-orange-600 transition-colors">Makan Berdua</h3>
-                        <p class="text-xs text-slate-400">Kulineran enak & ngobrol santai</p>
-                    </div>
-                    <span class="text-orange-300 group-hover:text-orange-500 group-hover:translate-x-1 transition-all font-bold">→</span>
-                </button>
-
-                <button onclick="selectActivity('Jajan-jajan', '🧋')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-amber-100/80 bg-white hover:border-amber-400 hover:bg-amber-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                        🧋
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800 group-hover:text-amber-600 transition-colors">Jajan-jajan</h3>
-                        <p class="text-xs text-slate-400">Hunting boba, street food, & cemilan lucu</p>
-                    </div>
-                    <span class="text-amber-300 group-hover:text-amber-500 group-hover:translate-x-1 transition-all font-bold">→</span>
-                </button>
-
-                <button onclick="selectActivity('Momotoran', '🛵')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-purple-100/80 bg-white hover:border-purple-400 hover:bg-purple-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                        🛵
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800 group-hover:text-purple-600 transition-colors">Momotoran</h3>
-                        <p class="text-xs text-slate-400">Keliling kota nikmatin angin sore/malam</p>
-                    </div>
-                    <span class="text-purple-300 group-hover:text-purple-500 group-hover:translate-x-1 transition-all font-bold">→</span>
-                </button>
-
-                <button onclick="selectActivity('Sepor / Olahraga', '🏸')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-emerald-100/80 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                        🏸
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Sepor / Olahraga</h3>
-                        <p class="text-xs text-slate-400">Jogging santai, badminton, atau jalan sehat</p>
-                    </div>
-                    <span class="text-emerald-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all font-bold">→</span>
-                </button>
-            </div>
-
-            <button onclick="goToSlide(1)" class="w-full py-2.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
-                ← Kembali ke ajakan awal
-            </button>
-        </section>
-
-        <!-- ==================== SLIDE 3: PENENTUAN WAKTU ==================== -->
-        <section id="slide-3" class="slide-section hidden animate-fade-slide">
-            <div class="text-center mb-6">
-                <div id="selected-activity-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-bold mb-2">
-                    <span>🎬</span> <span>Nonton Bioskop</span>
-                </div>
-                <h2 class="font-display text-2xl font-bold text-slate-800">
-                    Kapan nih kita gas? 🗓️
-                </h2>
-                <p class="text-slate-500 text-sm mt-1">
-                    Atur hari dan jam yang paling pas buat kamu
-                </p>
-            </div>
-
-            <!-- Pilihan Cepat Hari -->
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-slate-600 mb-2">Pilih Hari / Tanggal:</label>
-                <div class="grid grid-cols-3 gap-2 mb-3">
-                    <button type="button" onclick="setQuickDate(0)" class="quick-date-btn py-2 px-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-bold transition-all cursor-pointer">
-                        Hari Ini
-                    </button>
-                    <button type="button" onclick="setQuickDate(1)" class="quick-date-btn py-2 px-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-bold transition-all cursor-pointer">
-                        Besok
-                    </button>
-                    <button type="button" onclick="setNextWeekend()" class="quick-date-btn py-2 px-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-bold transition-all cursor-pointer">
-                        Weekend Ini
-                    </button>
-                </div>
-                <input type="date" id="date-input" class="w-full p-3.5 rounded-2xl border-2 border-rose-100 focus:border-rose-400 focus:outline-none bg-white text-slate-700 font-semibold text-sm transition-colors">
-            </div>
-
-            <!-- Pilihan Cepat Jam -->
-            <div class="mb-6">
-                <label class="block text-xs font-bold text-slate-600 mb-2">Jam Berapa?</label>
-                <div class="grid grid-cols-3 gap-2 mb-3">
-                    <button type="button" onclick="setQuickTime('15:30')" class="py-2 px-2 rounded-xl border border-orange-200 bg-orange-50/60 hover:bg-orange-100 text-orange-600 text-xs font-bold transition-all cursor-pointer">
-                        15:30 Sore
-                    </button>
-                    <button type="button" onclick="setQuickTime('19:00')" class="py-2 px-2 rounded-xl border border-orange-200 bg-orange-50/60 hover:bg-orange-100 text-orange-600 text-xs font-bold transition-all cursor-pointer">
-                        19:00 Malam
-                    </button>
-                    <button type="button" onclick="setQuickTime('20:00')" class="py-2 px-2 rounded-xl border border-orange-200 bg-orange-50/60 hover:bg-orange-100 text-orange-600 text-xs font-bold transition-all cursor-pointer">
-                        20:00 Santai
-                    </button>
-                </div>
-                <input type="time" id="time-input" class="w-full p-3.5 rounded-2xl border-2 border-rose-100 focus:border-rose-400 focus:outline-none bg-white text-slate-700 font-semibold text-sm transition-colors">
-            </div>
-
-            <!-- Pesan Error Validasi -->
-            <p id="time-error" class="hidden text-center text-xs font-bold text-rose-500 mb-3 animate-bounce">
-                ⚠️ Isi tanggal dan jamnya dulu ya biar jelas!
-            </p>
-
-            <!-- Tombol Aksi -->
-            <div class="flex flex-col gap-2">
-                <button onclick="confirmSchedule()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-400 hover:from-rose-600 hover:to-orange-500 text-white font-bold text-base shadow-lg shadow-rose-200 transform hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer">
-                    Lanjut Konfirmasi ✨
-                </button>
-                <button onclick="goToSlide(2)" class="w-full py-2.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
-                    ← Ganti pilihan aktivitas
-                </button>
-            </div>
-        </section>
-
-        <!-- ==================== SLIDE 4: KONFIRMASI & SHARE ==================== -->
-        <section id="slide-4" class="slide-section hidden animate-fade-slide">
-            <div class="text-center mb-5">
-                <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold mb-2">
-                    <span>✅</span> <span>DEAL! JADI BERANGKAT!</span>
-                </div>
-                <h2 class="font-display text-2xl font-bold text-slate-800">
-                    Tiket Jalan Bareng 🎟️
-                </h2>
-                <p class="text-slate-500 text-xs mt-1">
-                    Simpan tiket ini dan kirim ke WhatsApp biar nggak lupa!
-                </p>
-            </div>
-
-            <!-- Kartu Tiket Ringkasan -->
-            <div class="bg-gradient-to-br from-rose-50 via-white to-orange-50 border-2 border-rose-200/80 rounded-3xl p-5 mb-5 shadow-sm relative overflow-hidden">
-                <!-- Header Tiket -->
-                <div class="flex items-center justify-between border-b-2 border-dashed border-rose-200 pb-4 mb-4 ticket-cutout">
                     <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-rose-400 block">Status Ajakan</span>
-                        <span class="text-sm font-extrabold text-emerald-600 flex items-center gap-1">
-                            Pasti Mau! 💖
+                        <div class="flex items-center space-x-2">
+                            <span id="displayCoupleNames" class="font-bold text-slate-800 text-lg">Aku & Kamu</span>
+                            <span id="activeAccountBadge" class="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-md text-[10px] font-bold">Akun 1</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs text-slate-500">
+                            <span class="inline-flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1.5"></span><span id="onlineStatusText">Online Sekarang</span></span>
+                            <span>•</span>
+                            <span id="lastVisitedText">Terakhir: Baru saja</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span id="statusBadgeHeader" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700">
+                        💍 Pacaran
+                    </span>
+                    <button onclick="switchTab('settings')" id="settingsNavBtn" class="hidden px-3 py-2 rounded-xl bg-purple-50 text-purple-600 hover:bg-purple-100 transition text-xs font-semibold flex items-center">
+                        <i class="fa-solid fa-gear mr-1.5"></i> Pengaturan
+                    </button>
+                    <button onclick="logoutApp()" title="Keluar / Ganti Akun" class="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-xs">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-white/50 backdrop-blur-sm border-b border-rose-100 py-2 sticky top-[65px] z-20">
+            <div class="max-w-6xl mx-auto px-4 flex overflow-x-auto space-x-2 no-scrollbar">
+                <button onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-rose-500 text-white shadow-md shadow-rose-500/20 whitespace-nowrap" data-target="dashboard">
+                    <i class="fa-solid fa-house-chimney mr-1.5"></i> Dashboard
+                </button>
+                <button onclick="switchTab('dating')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="dating">
+                    <i class="fa-solid fa-dice mr-1.5"></i> Ayo Main!
+                </button>
+                <button onclick="switchTab('tree')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="tree">
+                    <i class="fa-solid fa-tree mr-1.5"></i> Pohon Kenangan
+                </button>
+                <button onclick="switchTab('qa')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="qa">
+                    <i class="fa-solid fa-comments mr-1.5"></i> Tanya Jawab
+                </button>
+                <button onclick="switchTab('game')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="game">
+                    <i class="fa-solid fa-gamepad mr-1.5"></i> Mini Game
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <!-- Welcome Banner & Counter -->
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 text-rose-500/10 text-9xl">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="relative z-10 text-center max-w-2xl mx-auto">
+                        <span class="inline-block px-3 py-1 bg-rose-100 text-rose-600 rounded-full text-xs font-bold mb-3">
+                            Halo, <span id="welcomeNameText">Sayang</span> & <span id="welcomePartnerText">Manis</span>! 💕
                         </span>
-                    </div>
-                    <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-rose-100 flex items-center justify-center text-2xl" id="conf-icon">
-                        🎬
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">Waktu Kebersamaan Kita</h2>
+                        <p id="dailyQuote" class="text-sm italic text-slate-500 mb-6">"Setiap detik bersamamu adalah lembaran indah."</p>
+
+                        <!-- Timer Boxes -->
+                        <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto">
+                            <div class="bg-white/90 rounded-2xl p-3 sm:p-4 shadow-sm border border-rose-100">
+                                <div id="counterDays" class="text-2xl sm:text-4xl font-extrabold text-rose-600">0</div>
+                                <div class="text-[11px] font-semibold text-slate-400 uppercase mt-1">Hari</div>
+                            </div>
+                            <div class="bg-white/90 rounded-2xl p-3 sm:p-4 shadow-sm border border-rose-100">
+                                <div id="counterHours" class="text-2xl sm:text-4xl font-extrabold text-pink-600">0</div>
+                                <div class="text-[11px] font-semibold text-slate-400 uppercase mt-1">Jam</div>
+                            </div>
+                            <div class="bg-white/90 rounded-2xl p-3 sm:p-4 shadow-sm border border-rose-100">
+                                <div id="counterMinutes" class="text-2xl sm:text-4xl font-extrabold text-purple-600">0</div>
+                                <div class="text-[11px] font-semibold text-slate-400 uppercase mt-1">Menit</div>
+                            </div>
+                            <div class="bg-white/90 rounded-2xl p-3 sm:p-4 shadow-sm border border-rose-100">
+                                <div id="counterSeconds" class="text-2xl sm:text-4xl font-extrabold text-rose-500">0</div>
+                                <div class="text-[11px] font-semibold text-slate-400 uppercase mt-1">Detik</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Detail Tiket -->
-                <div class="space-y-3 text-sm">
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400 font-medium">Aktivitas</span>
-                        <span class="font-bold text-slate-800 text-right" id="conf-activity">Nonton Bioskop</span>
+                <!-- Quick Access Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div onclick="switchTab('dating')" class="glass-card p-6 rounded-3xl shadow-md hover:shadow-xl transition cursor-pointer group">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-dice"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-1">Bingung Mau Ngapain?</h3>
+                        <p class="text-xs text-slate-500">Klik di sini untuk mendapatkan ide kencan dan aktivitas seru berdua!</p>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400 font-medium">Hari & Tanggal</span>
-                        <span class="font-bold text-slate-800 text-right" id="conf-date">Sabtu, 14 November 2026</span>
+
+                    <div onclick="switchTab('tree')" class="glass-card p-6 rounded-3xl shadow-md hover:shadow-xl transition cursor-pointer group">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-tree"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-1">Pohon Kenangan</h3>
+                        <p class="text-xs text-slate-500">Simpan dan abadikan setiap foto momen spesial kalian berdua di pohon cinta.</p>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-slate-400 font-medium">Waktu / Jam</span>
-                        <span class="font-bold text-rose-600 bg-rose-100/70 px-2.5 py-0.5 rounded-lg" id="conf-time">19:00 WIB</span>
+
+                    <div onclick="switchTab('game')" class="glass-card p-6 rounded-3xl shadow-md hover:shadow-xl transition cursor-pointer group">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-1">Main Mini Game</h3>
+                        <p class="text-xs text-slate-500">Uji kecocokan dan kekompakan kalian lewat permainan interaktif!</p>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Input Opsional Nomor WA -->
-            <div class="mb-3">
-                <label for="wa-number" class="block text-[11px] font-semibold text-slate-500 mb-1">
-                    Nomor WhatsApp Tujuan (Opsional - kosongkan untuk pilih kontak di WA):
-                </label>
-                <div class="relative">
-                    <input type="tel" id="wa-number" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-400 focus:outline-none text-xs bg-white text-slate-700">
+            <!-- TAB 2: AYO MAIN! (IDE KENCAN) -->
+            <section id="tab-dating" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-xl mx-auto text-center">
+                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold uppercase tracking-wider">Generator Ide Kencan</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-3 mb-2">Ayo Main & Kencan Seru! 🎲</h2>
+                    <p class="text-xs text-slate-500 mb-6">Putar kartu untuk menemukan ide aktivitas acak yang bisa kalian lakukan hari ini.</p>
+
+                    <div id="activityCard" class="bg-gradient-to-br from-rose-500 to-pink-600 text-white p-8 rounded-3xl shadow-lg mb-6 transition-transform duration-200">
+                        <div id="activityIcon" class="text-5xl mb-3">🍿</div>
+                        <h3 id="activityTitle" class="text-xl font-bold mb-2">Maraton Film Horor</h3>
+                        <p id="activityDesc" class="text-sm text-rose-100">Pilih film paling seram, matikan lampu, dan deketan di sofa!</p>
+                    </div>
+
+                    <button onclick="getRandomActivity()" class="w-full py-3.5 bg-slate-900 text-white font-semibold rounded-2xl shadow-lg hover:bg-slate-800 transition active:scale-95 text-sm">
+                        <i class="fa-solid fa-shuffle mr-2"></i> Acak Ide Aktivitas Lain
+                    </button>
                 </div>
-            </div>
+            </section>
 
-            <!-- Tombol Bagikan & Salin -->
-            <div class="space-y-2.5 mb-4">
-                <button onclick="shareToWhatsApp()" class="w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-sm shadow-lg shadow-emerald-200/70 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer">
-                    <span class="text-lg">💬</span>
-                    <span>Kirim Link ke WhatsApp</span>
+            <!-- TAB 3: POHON KENANGAN -->
+            <section id="tab-tree" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b border-rose-100 pb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-tree"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800">Pohon Kenangan Kita 🌳</h2>
+                                <p class="text-xs text-slate-500">Setiap daun adalah cerita indah yang tumbuh bersama cinta kalian.</p>
+                            </div>
+                        </div>
+                        <button onclick="openAddPhotoModal()" class="px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-semibold shadow-md hover:bg-emerald-700 transition flex items-center">
+                            <i class="fa-solid fa-plus mr-1.5"></i> Tambah Foto Kenangan
+                        </button>
+                    </div>
+
+                    <!-- Photo Tree Grid -->
+                    <div id="photoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: TANYA JAWAB (Q&A) -->
+            <section id="tab-qa" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-3xl mx-auto space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Kotak Tanya Jawab 💬</h2>
+                        <p class="text-xs text-slate-500">Tanyakan hal-hal manis, random, atau mendalam untuk dijawab pasanganmu!</p>
+                    </div>
+
+                    <form onsubmit="handlePostQuestion(event)" class="flex gap-2">
+                        <input type="text" id="questionInput" required placeholder="Tulis pertanyaan untuk pasanganmu..." class="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400">
+                        <button type="submit" class="px-5 py-3 bg-rose-500 text-white font-semibold rounded-xl text-xs shadow-md hover:bg-rose-600 transition whitespace-nowrap">
+                            <i class="fa-solid fa-paper-plane mr-1.5"></i> Kirim
+                        </button>
+                    </form>
+
+                    <div id="questionList" class="space-y-4">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: MINI GAME -->
+            <section id="tab-game" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                            <i id="gameIconHeader" class="fa-solid fa-heart-circle-check"></i>
+                        </div>
+                        <h2 id="gameTitleHeader" class="text-2xl font-bold text-slate-800">Kuis Kecocokan Cinta 💖</h2>
+                        <p id="gameDescHeader" class="text-slate-500 text-sm">Jawab pertanyaan ini bersama pasanganmu!</p>
+                    </div>
+
+                    <!-- Dynamic Game Content Container -->
+                    <div id="activeGameContainer">
+                        <!-- Quiz or other mini games rendered here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: PENGATURAN (KHUSUS ADMIN / AKUN 1) -->
+            <section id="tab-settings" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto space-y-6">
+                    <div class="flex items-center space-x-3 border-b border-rose-100 pb-4">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-gear"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-800">Pengaturan Admin</h2>
+                            <p class="text-slate-500 text-sm">Kelola preferensi web, tanggal jadian, status, dan jenis permainan.</p>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handleSaveSettings(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama Akun 1</label>
+                                <input type="text" id="settingName1" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nama Akun 2</label>
+                                <input type="text" id="settingName2" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Tanggal Mulai Hubungan / Jadian</label>
+                            <input type="date" id="settingStartDate" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Status Hubungan</label>
+                            <select id="settingStatus" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-rose-700">
+                                <option value="Pacaran">💍 Pacaran</option>
+                                <option value="Suami Istri">❤️ Suami Istri</option>
+                                <option value="Teman">🤝 Teman</option>
+                                <option value="Mantan">💔 Mantan</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Pilih Mini Game Utama</label>
+                            <select id="settingGameType" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-purple-700">
+                                <option value="quiz">💖 Kuis Kecocokan Cinta (5 Pertanyaan)</option>
+                                <option value="truth">🎯 Truth or Dare Pasangan</option>
+                                <option value="memory">🧠 Tes Seberapa Kenal Aku (Tebak-tebakan)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-rose-600 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/30 hover:opacity-95 transition text-sm">
+                            Simpan Perubahan Pengaturan
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-6 text-xs text-slate-400">
+            Dibuat dengan ❤️ untuk <span id="footerCoupleNames">Aku & Kamu</span> • Ruang Spesial Pasangan
+        </footer>
+    </div>
+
+    <!-- ==================== MODAL TAMBAH FOTO ==================== -->
+    <div id="addPhotoModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Tambah Kenangan Baru 🌳</h3>
+                <button onclick="closeAddPhotoModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
-
-                <button onclick="copyConfirmationLink()" class="w-full py-3 px-5 rounded-2xl bg-rose-100 hover:bg-rose-200/80 text-rose-700 font-bold text-sm flex items-center justify-center gap-2 transform active:scale-95 transition-all cursor-pointer">
-                    <span>📋</span>
-                    <span>Salin Link Halaman Konfirmasi</span>
+            </div>
+            <form onsubmit="handleSavePhoto(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Link URL Foto</label>
+                    <input type="url" id="photoUrl" required placeholder="https://contoh.com/foto.jpg" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Momen</label>
+                    <input type="date" id="photoDate" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cerita Singkat</label>
+                    <textarea id="photoCaption" required rows="2" placeholder="Ceritakan momen indah di foto ini..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl text-sm hover:bg-emerald-700 transition">
+                    Simpan ke Pohon Kenangan
                 </button>
-            </div>
+            </form>
+        </div>
+    </div>
 
-            <!-- Tombol Ulangi / Buat Rencana Baru -->
-            <div class="text-center pt-2 border-t border-slate-100">
-                <button onclick="resetApp()" class="text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
-                    🔄 Buat Rencana Baru / Ubah Pilihan
-                </button>
+    <!-- ==================== CUSTOM ALERT MODAL ==================== -->
+    <div id="customModal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modalBox" class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl transform scale-95 opacity-0 transition-all duration-200">
+            <div id="modalIcon" class="w-16 h-16 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center text-2xl mx-auto mb-4">
+                <i class="fa-solid fa-heart"></i>
             </div>
-        </section>
-
-    </main>
-
-    <!-- ==================== MODAL PERINGATAN LUCU (SLIDE 1) ==================== -->
-    <div id="force-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-2 border-rose-200 animate-pop">
-            <div class="w-20 h-20 mx-auto mb-4 bg-rose-100 rounded-full flex items-center justify-center text-4xl animate-wiggle">
-                😤🚫
-            </div>
-            <h3 class="font-display text-xl font-bold text-slate-800 mb-2" id="modal-title">
-                Eits, Gak Bisa! 😝
-            </h3>
-            <p class="text-slate-600 text-sm leading-relaxed mb-6" id="modal-message">
-                Tombol <span class="font-bold text-rose-500">"Enggak ah"</span> lagi rusak dan sedang dalam perbaikan! Kamu <span class="font-bold underline decoration-rose-400">HARUS MAU</span> pokoknya! 🥺👉👈
-            </p>
-            <button onclick="acceptForcedYes()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm shadow-lg shadow-rose-200 transform hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
-                Oke deh, aku mau! 😆💖
+            <h3 id="modalTitle" class="text-lg font-bold text-slate-800 mb-1">Notifikasi</h3>
+            <p id="modalMessage" class="text-xs text-slate-500 mb-6">Pesan informasi</p>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-slate-900 text-white font-semibold rounded-xl text-xs hover:bg-slate-800 transition">
+                Oke, Mengerti
             </button>
         </div>
     </div>
 
-    <!-- ==================== NOTIFIKASI TOAST ==================== -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-2 bg-slate-800 text-white px-5 py-3 rounded-full shadow-xl text-xs font-semibold transition-all">
-        <span>✨</span>
-        <span id="toast-message">Link konfirmasi berhasil disalin!</span>
+    <!-- ==================== HALAMAN LOGIN / MASUK ==================== -->
+    <div id="loginSection" class="fixed inset-0 z-40 bg-gradient-to-br from-pink-200 via-purple-200 to-rose-200 flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-pink-400/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl"></div>
+
+            <div class="text-center mb-8 relative z-10">
+                <div class="w-20 h-20 bg-gradient-to-tr from-rose-500 to-pink-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg shadow-rose-500/40 mb-3 animate-bounce">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h1 class="text-4xl font-script text-rose-600 font-bold">Ruang Cinta Kita</h1>
+                <p class="text-sm text-slate-500 mt-1">Pilih akun dan masukkan password (1234) untuk masuk</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 relative z-10">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Pilih Akun Login</label>
+                    <select id="loginAccount" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white/90 text-sm shadow-inner font-semibold text-slate-700">
+                        <option value="1">Akun 1 (Admin Utama)</option>
+                        <option value="2">Akun 2 (Pasangan)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Masukkan password (1234)" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white/90 text-sm shadow-inner">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg shadow-rose-500/30 hover:opacity-95 transition transform active:scale-95 flex items-center justify-center">
+                    <span>Masuk Ruang Cinta</span> <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </form>
+        </div>
     </div>
 
-    <!-- ==================== JAVASCRIPT LOGIKA INTERAKTIF ==================== -->
+    <!-- JavaScript Application Logic -->
     <script>
-        // State aplikasi
-        const appState = {
-            currentSlide: 1,
-            activity: '',
-            icon: '',
-            date: '',
-            time: '',
-            noClickCount: 0
+        // State Management
+        let appData = {
+            name1: 'Sayang',
+            name2: 'Manis',
+            startDate: '2023-01-01',
+            relationshipStatus: 'Pacaran',
+            activeGameType: 'quiz',
+            lastVisited: new Date().toISOString(),
+            photos: [
+                { id: 1, url: 'https://picsum.photos/id/1025/400/300', date: '2023-02-14', caption: 'Valentine pertama kita berdua 🌹' },
+                { id: 2, url: 'https://picsum.photos/id/338/400/300', date: '2023-06-20', caption: 'Liburan seru ke pantai sore hari 🌊' }
+            ],
+            questions: [
+                { id: 1, author: 'Sayang', text: 'Apa hal paling lucu yang aku lakukan minggu ini?', answer: 'Waktu kamu tidur sambil ngigo minta es krim! 😂' }
+            ]
         };
 
-        // Pesan lucu bervariasi jika tombol "Enggak" ditekan
-        const funnyForceMessages = [
-            {
-                title: "Eits, Gak Bisa! 😝",
-                msg: 'Tombol <span class="font-bold text-rose-500">"Enggak ah"</span> lagi rusak! Sistem mendeteksi kamu <span class="font-bold underline decoration-rose-400">HARUS MAU</span> jalan bareng aku! 🥺👉👈',
-                btn: "Oke deh, aku mau! 😆💖"
-            },
-            {
-                title: "Waduh, Error 404! 🙈",
-                msg: 'Pilihan menolak tidak ditemukan di hati ini. Pokoknya wajib klik tombol mau di bawah ini ya! ✨',
-                btn: "Iya iya, aku mauuu! 🥰"
-            }
+        let currentLoggedInAccount = null;
+
+        // Quotes collection
+        const dailyQuotes = [
+            "Setiap detik bersamamu adalah lembaran indah yang kutulis dengan penuh cinta.",
+            "Cinta bukan tentang seberapa lama kalian bersama, tapi seberapa tulus kalian saling menjaga.",
+            "Kamu adalah rumah tempat pulang paling nyaman di dunia ini.",
+            "Terima kasih telah menjadi alasan di balik senyuman tulusku setiap hari.",
+            "Bersamamu, dunia terasa jauh lebih hangat dan menyenangkan."
         ];
 
-        // Inisialisasi saat halaman dimuat
+        // Dating Ideas collection
+        const datingIdeas = [
+            { icon: "🍿", title: "Maraton Film Horor", desc: "Pilih film paling seram, matikan lampu, dan deketan di sofa!" },
+            { icon: "🍳", title: "Masak Menu Baru Bareng", desc: "Coba resep pasta atau kue baru di YouTube dan rasakan hasilnya." },
+            { icon: "🎨", title: "Lukis Kanvas / Doodle Bersama", desc: "Beli kanvas kecil atau kertas, lalu saling menggambar potret satu sama lain." },
+            { icon: "☕", title: "Cafe Hopping / Ngopi Sore", desc: "Cari coffee shop aesthetic baru di kota dan nikmati waktu berdua." },
+            { icon: "🧩", title: "Main Puzzle / Boardgame", desc: "Seru-seruan adu strategi atau menyusun puzzle sambil ngobrol santai." },
+            { icon: "🌙", title: "Stargazing / Piknik Malam", desc: "Duduk di halaman atau balkon malam hari sambil melihat bintang dan cerita impian." }
+        ];
+
+        // Quiz Questions & Data for Mini Games
+        const quizQuestions = [
+            { q: "Apa makanan favorit yang sering kalian pesan saat kencan?", options: ["Martabak / Terang Bulan", "Mie Ayam / Bakso", "Fast Food / Burger", "Sushi / Kuliner Jepang"] },
+            { q: "Kalau lagi jalan-jalan, tipe liburan seperti apa yang paling kalian sukai?", options: ["Pantai & Sunset Romantis", "Pegunungan & Udara Sejuk", "Staycation di Hotel Nyaman", "Wisata Kuliner Kota"] },
+            { q: "Siapa yang biasanya paling sering ngambek duluan kalau ada masalah?", options: ["Aku", "Pasanganku", "Dua-duanya santai", "Tergantung situasi"] },
+            { q: "Apa kegiatan favorit di akhir pekan?", options: ["Nonton film seharian", "Jalan-jalan santai di mall", "Tidur pulas & rebahan", "Nongkrong di kafe estetik"] },
+            { q: "Apa hal yang paling bikin kalian bahagia dari satu sama lain?", options: ["Perhatian & pelukan hangat", "Bisa diajak bercanda & ketawa", "Saling mendukung impian", "Selalu ada di setiap saat"] }
+        ];
+        let currentQuizIndex = 0;
+
+        const truthOrDareQuestions = [
+            "Truth: Apa rahasia kecil yang belum pernah kamu ceritakan ke pasanganmu?",
+            "Dare: Kirim voice note suara gombalan paling lucu ke pasangan sekarang!",
+            "Truth: Apa hal pertama yang kamu perhatikan saat pertama kali ketemu?",
+            "Dare: Puji pasanganmu dengan 3 kalimat paling manis saat ini juga!",
+            "Truth: Lagu apa yang paling mengingatkanmu pada pasanganmu?"
+        ];
+        let currentTodIndex = 0;
+
+        // Load data from localStorage on start
         window.addEventListener('DOMContentLoaded', () => {
-            setupDefaultDateTime();
-            checkSharedUrlParams();
+            const saved = localStorage.getItem('couple_space_data');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            const loggedAcc = localStorage.getItem('logged_account');
+            const isLoggedIn = localStorage.getItem('is_logged_in') === 'true';
+
+            if (isLoggedIn && loggedAcc) {
+                currentLoggedInAccount = loggedAcc;
+                appData.lastVisited = new Date().toISOString();
+                saveData();
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                initApp();
+            } else {
+                document.getElementById('loginSection').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+            }
         });
 
-        // Set default tanggal (besok) & jam (19:00) agar user lebih cepat memilih
-        function setupDefaultDateTime() {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const yyyy = tomorrow.getFullYear();
-            const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-            const dd = String(tomorrow.getDate()).padStart(2, '0');
-            
-            const dateInput = document.getElementById('date-input');
-            const timeInput = document.getElementById('time-input');
-            
-            dateInput.min = new Date().toISOString().split('T')[0];
-            dateInput.value = `${yyyy}-${mm}-${dd}`;
-            timeInput.value = '19:00';
-        }
+        function handleLogin(event) {
+            event.preventDefault();
+            const account = document.getElementById('loginAccount').value;
+            const password = document.getElementById('loginPassword').value.trim();
 
-        // Cek apakah halaman dibuka dari link konfirmasi yang dibagikan (?confirmed=1...)
-        function checkSharedUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('confirmed') === '1') {
-                const act = params.get('act') || 'Jalan Bareng';
-                const icon = params.get('icon') || '💖';
-                const date = params.get('date') || '';
-                const time = params.get('time') || '19:00';
-
-                appState.activity = act;
-                appState.icon = icon;
-                appState.date = date;
-                appState.time = time;
-
-                renderConfirmationTicket();
-                goToSlide(4, false);
-            }
-        }
-
-        // Navigasi antar slide dengan animasi & update progress bar
-        function goToSlide(slideNumber, triggerConfetti = false) {
-            appState.currentSlide = slideNumber;
-
-            // Sembunyikan semua slide
-            document.querySelectorAll('.slide-section').forEach(sec => {
-                sec.classList.add('hidden');
-            });
-
-            // Tampilkan slide tujuan
-            const targetSlide = document.getElementById(`slide-${slideNumber}`);
-            if (targetSlide) {
-                targetSlide.classList.remove('hidden');
-            }
-
-            // Update Progress Bar
-            const progressBar = document.getElementById('progress-bar');
-            const stepLabel = document.getElementById('step-label');
-            const stepEmoji = document.getElementById('step-emoji');
-
-            const stepMeta = {
-                1: { width: '25%', label: 'Langkah 1 dari 4', emoji: '💌 Ajakan' },
-                2: { width: '50%', label: 'Langkah 2 dari 4', emoji: '🎯 Pilih Aktivitas' },
-                3: { width: '75%', label: 'Langkah 3 dari 4', emoji: '⏰ Atur Waktu' },
-                4: { width: '100%', label: 'Selesai! 🎉', emoji: '🎟️ Tiket Kita' }
-            };
-
-            const meta = stepMeta[slideNumber];
-            progressBar.style.width = meta.width;
-            stepLabel.textContent = meta.label;
-            stepEmoji.textContent = meta.emoji;
-
-            // Efek confetti saat masuk halaman konfirmasi
-            if (slideNumber === 4 && triggerConfetti && typeof confetti === 'function') {
-                confetti({
-                    particleCount: 70,
-                    spread: 65,
-                    origin: { y: 0.6 },
-                    colors: ['#FB7185', '#FDBA74', '#F472B6', '#34D399']
-                });
-            }
-        }
-
-        // Slide 1: Klik "Mau!"
-        function handleYes() {
-            goToSlide(2);
-        }
-
-        // Slide 1: Klik "Enggak ah" -> Munculkan Modal Peringatan Lucu
-        function showForceModal() {
-            const modal = document.getElementById('force-modal');
-            const content = funnyForceMessages[appState.noClickCount % funnyForceMessages.length];
-            appState.noClickCount++;
-
-            document.getElementById('modal-title').textContent = content.title;
-            document.getElementById('modal-message').innerHTML = content.msg;
-            modal.querySelector('button').textContent = content.btn;
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        // Tutup modal lucu dan lanjut ke Slide 2
-        function acceptForcedYes() {
-            const modal = document.getElementById('force-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            goToSlide(2);
-        }
-
-        // Slide 2: Pilih Aktivitas
-        function selectActivity(activityName, iconEmoji) {
-            appState.activity = activityName;
-            appState.icon = iconEmoji;
-
-            // Update badge di Slide 3
-            const badge = document.getElementById('selected-activity-badge');
-            badge.innerHTML = `<span>${iconEmoji}</span> <span>${activityName}</span>`;
-
-            goToSlide(3);
-        }
-
-        // Slide 3: Tombol cepat pilih tanggal (Hari ini / Besok)
-        function setQuickDate(daysOffset) {
-            const target = new Date();
-            target.setDate(target.getDate() + daysOffset);
-            const yyyy = target.getFullYear();
-            const mm = String(target.getMonth() + 1).padStart(2, '0');
-            const dd = String(target.getDate()).padStart(2, '0');
-            document.getElementById('date-input').value = `${yyyy}-${mm}-${dd}`;
-        }
-
-        // Slide 3: Tombol cepat Weekend Ini (Sabtu terdekat)
-        function setNextWeekend() {
-            const today = new Date();
-            const dayOfWeek = today.getDay(); // 0 = Minggu, 6 = Sabtu
-            const daysUntilSaturday = dayOfWeek === 6 ? 7 : (6 - dayOfWeek);
-            setQuickDate(daysUntilSaturday);
-        }
-
-        // Slide 3: Tombol cepat pilih jam
-        function setQuickTime(timeStr) {
-            document.getElementById('time-input').value = timeStr;
-        }
-
-        // Slide 3 -> Slide 4: Validasi tanggal & jam lalu tampilkan konfirmasi
-        function confirmSchedule() {
-            const dateVal = document.getElementById('date-input').value;
-            const timeVal = document.getElementById('time-input').value;
-            const errorEl = document.getElementById('time-error');
-
-            if (!dateVal || !timeVal) {
-                errorEl.classList.remove('hidden');
+            if (password !== "1234") {
+                showModal("Password Salah", "Password yang kamu masukkan salah! Gunakan password: 1234", "fa-triangle-exclamation", "text-amber-500");
                 return;
             }
 
-            errorEl.classList.add('hidden');
-            appState.date = dateVal;
-            appState.time = timeVal;
+            currentLoggedInAccount = account;
+            localStorage.setItem('is_logged_in', 'true');
+            localStorage.setItem('logged_account', account);
+            appData.lastVisited = new Date().toISOString();
+            saveData();
 
-            // Simpan state ke URL browser dengan try-catch agar tidak error di iframe/srcdoc
-            try {
-                if (window.location.protocol.startsWith('http') && window.location.origin !== 'null') {
-                    const shareUrl = generateShareableUrl();
-                    window.history.replaceState({}, '', shareUrl);
-                }
-            } catch (err) {
-                console.warn('History replaceState dilewati pada mode preview:', err);
-            }
-
-            renderConfirmationTicket();
-            goToSlide(4, true);
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            initApp();
+            showModal("Berhasil Masuk!", `Selamat datang di Ruang Cinta Kita sebagai Akun ${account}!`, "fa-heart", "text-rose-500");
         }
 
-        // Format tanggal ke Bahasa Indonesia yang cantik (misal: Sabtu, 14 November 2026)
-        function formatIndonesianDate(dateString) {
-            if (!dateString) return '-';
-            const parts = dateString.split('-').map(Number);
-            if (parts.length !== 3 || parts.some(isNaN)) return dateString;
+        function logoutApp() {
+            localStorage.removeItem('is_logged_in');
+            localStorage.removeItem('logged_account');
+            location.reload();
+        }
+
+        function saveData() {
+            localStorage.setItem('couple_space_data', JSON.stringify(appData));
+        }
+
+        function initApp() {
+            document.getElementById('displayCoupleNames').innerText = `${appData.name1} & ${appData.name2}`;
+            document.getElementById('footerCoupleNames').innerText = `${appData.name1} & ${appData.name2}`;
+            document.getElementById('welcomeNameText').innerText = currentLoggedInAccount === '1' ? appData.name1 : appData.name2;
+            document.getElementById('welcomePartnerText').innerText = currentLoggedInAccount === '1' ? appData.name2 : appData.name1;
             
-            const [year, month, day] = parts;
-            const dateObj = new Date(year, month - 1, day);
-            
-            const options = {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            };
-            return dateObj.toLocaleDateString('id-ID', options);
-        }
-
-        // Render data ke tiket di Slide 4
-        function renderConfirmationTicket() {
-            document.getElementById('conf-icon').textContent = appState.icon || '💖';
-            document.getElementById('conf-activity').textContent = appState.activity || 'Jalan Bareng';
-            document.getElementById('conf-date').textContent = formatIndonesianDate(appState.date);
-            document.getElementById('conf-time').textContent = `${appState.time || '19:00'} WIB`;
-        }
-
-        // Membuat URL lengkap dengan parameter query konfirmasi secara aman di semua environment
-        function generateShareableUrl() {
-            const params = new URLSearchParams();
-            params.set('confirmed', '1');
-            params.set('act', appState.activity || 'Jalan Bareng');
-            params.set('icon', appState.icon || '💖');
-            params.set('date', appState.date || '');
-            params.set('time', appState.time || '19:00');
-
-            try {
-                // Gunakan origin + pathname jika valid HTTP/HTTPS
-                if (window.location.protocol.startsWith('http') && window.location.origin && window.location.origin !== 'null') {
-                    const url = new URL(window.location.origin + window.location.pathname);
-                    url.search = params.toString();
-                    return url.toString();
-                }
-            } catch (e) {
-                // Abaikan jika URL constructor gagal pada srcdoc/file
-            }
-
-            // Fallback aman jika dibuka dari file lokal atau iframe sandbox
-            const baseHref = window.location.href.split('?')[0];
-            if (baseHref && !baseHref.startsWith('about:')) {
-                return `${baseHref}?${params.toString()}`;
-            }
-            return `?${params.toString()}`;
-        }
-
-        // Format teks pesan konfirmasi untuk WA & Clipboard
-        function buildShareMessage() {
-            const formattedDate = formatIndonesianDate(appState.date);
-            const link = generateShareableUrl();
-            const isValidFullLink = link.startsWith('http');
-
-            let message = `Hai! Aku *MAU* diajak jalan bareng! 💖✨\n\n` +
-                          `🎟️ *Tiket Rencana Kita:*\n` +
-                          `• Aktivitas: ${appState.icon} *${appState.activity}*\n` +
-                          `• Hari/Tanggal: 📅 *${formattedDate}*\n` +
-                          `• Jam: ⏰ *${appState.time} WIB*`;
-
-            if (isValidFullLink) {
-                message += `\n\nLihat tiket konfirmasinya di sini ya:\n${link}`;
-            }
-
-            return message;
-        }
-
-        // Kirim langsung ke WhatsApp
-        function shareToWhatsApp() {
-            const message = buildShareMessage();
-            const encodedMessage = encodeURIComponent(message);
-            
-            // Cek apakah user mengisi nomor WA tujuan
-            const waInput = document.getElementById('wa-number');
-            let rawPhone = waInput ? waInput.value.replace(/\D/g, '') : '';
-            if (rawPhone.startsWith('0')) {
-                rawPhone = '62' + rawPhone.slice(1);
-            }
-
-            const waUrl = rawPhone 
-                ? `https://wa.me/${rawPhone}?text=${encodedMessage}`
-                : `https://wa.me/?text=${encodedMessage}`;
-
-            window.open(waUrl, '_blank', 'noopener,noreferrer');
-        }
-
-        // Salin link & detail konfirmasi ke clipboard dengan fallback iframe-safe
-        function copyConfirmationLink() {
-            const shareText = buildShareMessage();
-            
-            const fallbackCopy = () => {
-                const tempInput = document.createElement('textarea');
-                tempInput.value = shareText;
-                tempInput.style.position = 'fixed';
-                tempInput.style.opacity = '0';
-                document.body.appendChild(tempInput);
-                tempInput.focus();
-                tempInput.select();
-                try {
-                    document.execCommand('copy');
-                    showToast('Link & tiket berhasil disalin! Tinggal paste ke chat ✨');
-                } catch (err) {
-                    showToast('Gagal menyalin otomatis, silakan salin manual ya 🙏');
-                }
-                document.body.removeChild(tempInput);
-            };
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(shareText)
-                    .then(() => showToast('Link & tiket berhasil disalin! Tinggal paste ke chat ✨'))
-                    .catch(() => fallbackCopy());
+            const badgeAcc = document.getElementById('activeAccountBadge');
+            if (currentLoggedInAccount === '1') {
+                badgeAcc.innerText = "Akun 1 (Admin)";
+                document.getElementById('settingsNavBtn').classList.remove('hidden');
             } else {
-                fallbackCopy();
+                badgeAcc.innerText = "Akun 2";
+                document.getElementById('settingsNavBtn').classList.add('hidden');
             }
+
+            updateRelationshipStatusBadge(appData.relationshipStatus || 'Pacaran');
+
+            const randomQuote = dailyQuotes[Math.floor(Math.random() * dailyQuotes.length)];
+            document.getElementById('dailyQuote').innerText = `"${randomQuote}"`;
+
+            document.getElementById('onlineStatusText').innerText = "Online Sekarang";
+            formatLastVisited();
+
+            updateCounter();
+            setInterval(updateCounter, 1000);
+
+            renderPhotos();
+            renderQuestions();
+            renderActiveGame();
+            initSettingsForm();
         }
 
-        // Tampilkan notifikasi toast melayang
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = msg;
-            toast.classList.remove('hidden');
-            toast.classList.add('flex');
-
-            setTimeout(() => {
-                toast.classList.add('hidden');
-                toast.classList.remove('flex');
-            }, 3000);
+        function updateRelationshipStatusBadge(status) {
+            const badge = document.getElementById('statusBadgeHeader');
+            badge.innerText = status === 'Pacaran' ? '💍 Pacaran' : status === 'Suami Istri' ? '❤️ Suami Istri' : status === 'Teman' ? '🤝 Teman' : '💔 Mantan';
         }
 
-        // Reset aplikasi untuk membuat rencana baru dari Slide 1
-        function resetApp() {
-            try {
-                if (window.location.protocol.startsWith('http') && window.location.origin !== 'null') {
-                    const cleanUrl = window.location.origin + window.location.pathname;
-                    window.history.replaceState({}, '', cleanUrl);
+        function formatLastVisited() {
+            const last = new Date(appData.lastVisited || new Date());
+            const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('lastVisitedText').innerText = `Terakhir: ${last.toLocaleDateString('id-ID', options)}`;
+        }
+
+        function updateCounter() {
+            if (!appData.startDate) return;
+            const start = new Date(appData.startDate + 'T00:00:00');
+            const now = new Date();
+            const diff = now - start;
+
+            if (diff < 0) {
+                document.getElementById('counterDays').innerText = 0;
+                document.getElementById('counterHours').innerText = 0;
+                document.getElementById('counterMinutes').innerText = 0;
+                document.getElementById('counterSeconds').innerText = 0;
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('counterDays').innerText = days;
+            document.getElementById('counterHours').innerText = hours;
+            document.getElementById('counterMinutes').innerText = minutes;
+            document.getElementById('counterSeconds').innerText = seconds;
+        }
+
+        function switchTab(targetTab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${targetTab}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap";
+                if (btn.dataset.target === targetTab) {
+                    btn.className = "tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-rose-500 text-white shadow-md shadow-rose-500/20 whitespace-nowrap";
                 }
-            } catch (e) {
-                // Abaikan pada mode preview
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderActiveGame() {
+            const container = document.getElementById('activeGameContainer');
+            const iconHeader = document.getElementById('gameIconHeader');
+            const titleHeader = document.getElementById('gameTitleHeader');
+            const descHeader = document.getElementById('gameDescHeader');
+
+            const gameType = appData.activeGameType || 'quiz';
+
+            if (gameType === 'quiz') {
+                iconHeader.className = "fa-solid fa-heart-circle-check";
+                titleHeader.innerText = "Kuis Kecocokan Cinta 💖";
+                descHeader.innerText = "Jawab 5 pertanyaan kilat ini untuk melihat seberapa klop kamu dan pasanganmu!";
+                loadQuizQuestion();
+            } else if (gameType === 'truth') {
+                iconHeader.className = "fa-solid fa-masks-theater";
+                titleHeader.innerText = "Truth or Dare Pasangan 🎯";
+                descHeader.innerText = "Putar dan ambil tantangan seru untuk dimainkan berdua!";
+                container.innerHTML = `
+                    <div class="text-center space-y-6">
+                        <div id="todCard" class="bg-gradient-to-br from-purple-500 to-indigo-600 text-white p-8 rounded-3xl shadow-lg min-h-[160px] flex items-center justify-center font-medium text-lg">
+                            ${truthOrDareQuestions[currentTodIndex]}
+                        </div>
+                        <button onclick="nextTodQuestion()" class="px-8 py-3.5 bg-slate-900 text-white font-semibold rounded-2xl shadow-xl hover:bg-slate-800 transition active:scale-95 text-sm">
+                            <i class="fa-solid fa-shuffle mr-2"></i> Acak Pertanyaan / Tantangan Lain
+                        </button>
+                    </div>
+                `;
+            } else if (gameType === 'memory') {
+                iconHeader.className = "fa-solid fa-brain";
+                titleHeader.innerText = "Tes Seberapa Kenal Aku 🧠";
+                descHeader.innerText = "Tebak hal-hal kecil tentang pasanganmu untuk menguji kedekatan kalian!";
+                container.innerHTML = `
+                    <div class="bg-white/80 p-6 rounded-2xl border border-rose-100 shadow-sm space-y-4 text-left">
+                        <span class="text-xs font-bold text-rose-500 uppercase tracking-wider">Tebak-tebakan Kilat</span>
+                        <h3 class="text-base font-bold text-slate-800">Apa warna baju favorit yang sering dipakai ${appData.name2}?</h3>
+                        <div class="space-y-2">
+                            <button onclick="checkMemoryAnswer(true)" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-rose-50 text-xs font-medium">Hitam / Gelap</button>
+                            <button onclick="checkMemoryAnswer(false)" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-rose-50 text-xs font-medium">Pastel / Cerah</button>
+                        </div>
+                        <div id="memoryResult" class="text-xs font-semibold text-center text-emerald-600 hidden pt-2">Jawaban benar! Kalian saling kenal dengan sangat baik! 🎉</div>
+                    </div>
+                `;
             }
-            appState.noClickCount = 0;
-            goToSlide(1);
+        }
+
+        function loadQuizQuestion() {
+            const container = document.getElementById('activeGameContainer');
+            if (currentQuizIndex < quizQuestions.length) {
+                const current = quizQuestions[currentQuizIndex];
+                const optionsHtml = current.options.map((opt, idx) => `
+                    <button onclick="selectQuizOption(${idx})" class="w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-rose-50 hover:border-rose-300 text-xs font-medium text-slate-700 transition flex items-center justify-between group">
+                        <span>${opt}</span>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-rose-500 transition"></i>
+                    </button>
+                `).join('');
+
+                container.innerHTML = `
+                    <div id="quizQuestionBox" class="mb-6 text-left">
+                        <span class="text-xs font-bold text-rose-500 uppercase tracking-wider block mb-1">Pertanyaan ${currentQuizIndex + 1} dari ${quizQuestions.length}</span>
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">${current.q}</h3>
+                        <div class="space-y-3">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+            } else {
+                const score = 92 + Math.floor(Math.random() * 8);
+                container.innerHTML = `
+                    <div class="text-center space-y-4">
+                        <div class="p-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-3xl shadow-lg">
+                            <h3 class="text-xl font-bold mb-1">Hasil Kecocokan Kalian Berdua!</h3>
+                            <div class="text-5xl font-extrabold my-3">${score}%</div>
+                            <p class="text-rose-100 text-sm">Kalian adalah pasangan sejiwa yang sangat serasi dan saling melengkapi!</p>
+                        </div>
+                        <button onclick="restartQuiz()" class="px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl text-sm shadow-md hover:bg-slate-800 transition">
+                            <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function selectQuizOption(idx) {
+            currentQuizIndex++;
+            loadQuizQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0;
+            loadQuizQuestion();
+        }
+
+        function nextTodQuestion() {
+            currentTodIndex = (currentTodIndex + 1) % truthOrDareQuestions.length;
+            document.getElementById('todCard').innerText = truthOrDareQuestions[currentTodIndex];
+        }
+
+        function checkMemoryAnswer(isCorrect) {
+            document.getElementById('memoryResult').classList.remove('hidden');
+        }
+
+        function initSettingsForm() {
+            document.getElementById('settingName1').value = appData.name1;
+            document.getElementById('settingName2').value = appData.name2;
+            document.getElementById('settingStartDate').value = appData.startDate;
+            document.getElementById('settingStatus').value = appData.relationshipStatus || 'Pacaran';
+            document.getElementById('settingGameType').value = appData.activeGameType || 'quiz';
+        }
+
+        function handleSaveSettings(event) {
+            event.preventDefault();
+            if (currentLoggedInAccount !== '1') {
+                showModal("Akses Ditolak", "Hanya Akun 1 (Admin) yang dapat mengubah pengaturan!", "fa-triangle-exclamation", "text-amber-500");
+                return;
+            }
+
+            appData.name1 = document.getElementById('settingName1').value.trim();
+            appData.name2 = document.getElementById('settingName2').value.trim();
+            appData.startDate = document.getElementById('settingStartDate').value;
+            appData.relationshipStatus = document.getElementById('settingStatus').value;
+            appData.activeGameType = document.getElementById('settingGameType').value;
+
+            saveData();
+            initApp();
+            showModal("Berhasil Disimpan", "Pengaturan admin berhasil diperbarui!", "fa-circle-check", "text-emerald-500");
+            switchTab('dashboard');
+        }
+
+        function getRandomActivity() {
+            const randomItem = datingIdeas[Math.floor(Math.random() * datingIdeas.length)];
+            const card = document.getElementById('activityCard');
+            card.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                document.getElementById('activityIcon').innerText = randomItem.icon;
+                document.getElementById('activityTitle').innerText = randomItem.title;
+                document.getElementById('activityDesc').innerText = randomItem.desc;
+                card.style.transform = "scale(1)";
+            }, 150);
+        }
+
+        function renderPhotos() {
+            const grid = document.getElementById('photoGrid');
+            if (!appData.photos || appData.photos.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-sm">Belum ada foto kenangan. Yuk tambah foto pertamamu!</div>`;
+                return;
+            }
+
+            grid.innerHTML = appData.photos.map(p => `
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-rose-100 hover:shadow-xl transition flex flex-col group">
+                    <div class="h-48 overflow-hidden relative bg-slate-100">
+                        <img src="${p.url}" alt="Kenangan" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/400x300/f43f5e/ffffff?text=Foto+Kenangan'">
+                        <span class="absolute bottom-2 right-2 px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white rounded-lg text-[10px] font-medium">${p.date}</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <p class="text-xs text-slate-700 font-medium mb-3">${p.caption}</p>
+                        <button onclick="deletePhoto(${p.id})" class="text-rose-500 hover:text-rose-700 text-xs font-semibold flex items-center self-start">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddPhotoModal() {
+            document.getElementById('photoDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('addPhotoModal').classList.remove('hidden');
+        }
+
+        function closeAddPhotoModal() {
+            document.getElementById('addPhotoModal').classList.add('hidden');
+        }
+
+        function handleSavePhoto(event) {
+            event.preventDefault();
+            const url = document.getElementById('photoUrl').value.trim();
+            const date = document.getElementById('photoDate').value;
+            const caption = document.getElementById('photoCaption').value.trim();
+
+            const newPhoto = { id: Date.now(), url, date, caption };
+            appData.photos.unshift(newPhoto);
+            saveData();
+            renderPhotos();
+            closeAddPhotoModal();
+            event.target.reset();
+            showModal("Berhasil!", "Foto kenangan baru berhasil ditambahkan ke pohon.", "fa-tree", "text-emerald-500");
+        }
+
+        function deletePhoto(id) {
+            appData.photos = appData.photos.filter(p => p.id !== id);
+            saveData();
+            renderPhotos();
+            showModal("Dihapus", "Foto kenangan telah dihapus.", "fa-trash", "text-slate-500");
+        }
+
+        function renderQuestions() {
+            const list = document.getElementById('questionList');
+            if (!appData.questions || appData.questions.length === 0) {
+                list.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">Belum ada pertanyaan. Mulai tanyakan sesuatu pada pasanganmu!</div>`;
+                return;
+            }
+
+            list.innerHTML = appData.questions.map(q => `
+                <div class="bg-white/80 p-5 rounded-2xl border border-rose-100 shadow-sm space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center font-bold text-xs">
+                                ${q.author.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-slate-800">${q.author}</span>
+                                <span class="text-[10px] text-slate-400 block">Bertanya</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteQuestion(${q.id})" class="text-slate-400 hover:text-rose-500 text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm font-medium text-slate-800 pl-10">"${q.text}"</p>
+                    
+                    <div class="pl-10 pt-2 border-t border-slate-100">
+                        ${q.answer ? `
+                            <div class="bg-rose-50/60 p-3 rounded-xl text-xs text-slate-700">
+                                <span class="font-bold text-rose-600 block mb-0.5">Jawaban Pasangan:</span>
+                                ${q.answer}
+                            </div>
+                        ` : `
+                            <div class="flex gap-2">
+                                <input type="text" id="ans-${q.id}" placeholder="Tulis jawabanmu..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white">
+                                <button onclick="answerQuestion(${q.id})" class="px-4 py-2 bg-rose-500 text-white rounded-xl text-xs font-semibold hover:bg-rose-600 transition">Jawab</button>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handlePostQuestion(event) {
+            event.preventDefault();
+            const text = document.getElementById('questionInput').value.trim();
+            if (!text) return;
+
+            const authorName = currentLoggedInAccount === '1' ? appData.name1 : appData.name2;
+            const newQ = { id: Date.now(), author: authorName, text, answer: null };
+
+            appData.questions.unshift(newQ);
+            saveData();
+            renderQuestions();
+            document.getElementById('questionInput').value = '';
+            showModal("Terkirim", "Pertanyaan berhasil dikirim ke pasanganmu!", "fa-paper-plane", "text-rose-500");
+        }
+
+        function answerQuestion(id) {
+            const input = document.getElementById(`ans-${id}`);
+            const ansText = input.value.trim();
+            if (!ansText) return;
+
+            const q = appData.questions.find(item => item.id === id);
+            if (q) {
+                q.answer = ansText;
+                saveData();
+                renderQuestions();
+                showModal("Terjawab!", "Jawaban berhasil disimpan.", "fa-heart", "text-rose-500");
+            }
+        }
+
+        function deleteQuestion(id) {
+            appData.questions = appData.questions.filter(q => q.id !== id);
+            saveData();
+            renderQuestions();
+        }
+
+        function showModal(title, message, iconClass = "fa-heart", iconColor = "text-rose-500") {
+            const modal = document.getElementById('customModal');
+            const box = document.getElementById('modalBox');
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            
+            const iconDiv = document.getElementById('modalIcon');
+            iconDiv.className = `w-16 h-16 rounded-full bg-rose-50 ${iconColor} flex items-center justify-center text-2xl mx-auto mb-4`;
+            iconDiv.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                box.classList.remove('scale-95', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            const box = document.getElementById('modalBox');
+            box.classList.remove('scale-100', 'opacity-100');
+            box.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
         }
     </script>
 </body>
