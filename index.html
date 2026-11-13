@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruang Cinta Kita - Real-Time Sync & Ajak Main</title>
+    <title>Ruang Cinta Kita - Real-Time Sync</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,11 +21,6 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-        .animate-float { animation: float 3s ease-in-out infinite; }
     </style>
 </head>
 <body class="text-slate-700 flex flex-col">
@@ -73,8 +68,8 @@
                 <button onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-rose-500 text-white shadow-md shadow-rose-500/20 whitespace-nowrap" data-target="dashboard">
                     <i class="fa-solid fa-house-chimney mr-1.5"></i> Dashboard
                 </button>
-                <button onclick="switchTab('dating')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="dating">
-                    <i class="fa-solid fa-dice mr-1.5"></i> Ayo Main!
+                <button onclick="switchTab('tree')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="tree">
+                    <i class="fa-solid fa-tree mr-1.5"></i> Pohon Kenangan
                 </button>
                 <button onclick="switchTab('qa')" class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-white/80 text-slate-600 hover:bg-rose-50 whitespace-nowrap" data-target="qa">
                     <i class="fa-solid fa-comments mr-1.5"></i> Tanya Jawab
@@ -124,75 +119,24 @@
                 </div>
             </section>
 
-            <!-- TAB 2: AYO MAIN! (PILIH AKTIVITAS, WAKTU & JADWAL TER-SYNC CLOUD) -->
-            <section id="tab-dating" class="tab-content hidden space-y-6 flex flex-col items-center">
-                <div class="w-full max-w-lg">
-                    <div class="glass-card shadow-2xl rounded-3xl p-6 sm:p-8 transition-all duration-500 relative overflow-hidden space-y-6">
-                        
-                        <div class="text-center space-y-1">
-                            <span class="inline-block bg-pink-100 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Ayo Main Bareng ✨</span>
-                            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Rencanakan Kencan Kita!</h2>
-                            <p class="text-gray-600 text-sm">Pilih kegiatan, waktu, dan kirimkan ke pasanganmu secara real-time.</p>
-                        </div>
-
-                        <!-- Status Jadwal Aktif Saat Ini dari Database -->
-                        <div id="activeScheduleBox" class="bg-gradient-to-br from-pink-50 to-purple-50 p-4 rounded-2xl border border-pink-200 hidden">
-                            <p class="text-xs font-bold text-rose-600 uppercase mb-1"><i class="fas fa-heart"></i> Jadwal Kencan Aktif:</p>
-                            <p id="savedActDisplay" class="font-bold text-slate-800 text-base">Nonton Bioskop 🎬</p>
-                            <p id="savedTimeDisplay" class="text-xs text-slate-600 mt-0.5">📅 Besok, Jam 15:30 WIB</p>
-                            <p id="savedNoteDisplay" class="text-xs text-slate-500 italic mt-1 hidden"></p>
-                        </div>
-
-                        <!-- Form Pilihan Aktivitas -->
-                        <form onsubmit="handleSaveSchedule(event)" class="space-y-4">
-                            <div class="space-y-2">
-                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Pilih Aktivitas Seru</label>
-                                <div class="grid grid-cols-1 gap-2.5">
-                                    <label class="flex items-center p-3 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/70 cursor-pointer transition">
-                                        <input type="radio" name="chosenActivity" value="Nonton Bioskop 🎬" checked class="mr-3">
-                                        <span class="text-xl mr-2">🎬</span> <span class="font-bold text-sm text-gray-800">Nonton Bioskop</span>
-                                    </label>
-                                    <label class="flex items-center p-3 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/70 cursor-pointer transition">
-                                        <input type="radio" name="chosenActivity" value="Olahraga 🏀" class="mr-3">
-                                        <span class="text-xl mr-2">🏀</span> <span class="font-bold text-sm text-gray-800">Olahraga Bareng</span>
-                                    </label>
-                                    <label class="flex items-center p-3 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/70 cursor-pointer transition">
-                                        <input type="radio" name="chosenActivity" value="Jalan-jalan 🚗" class="mr-3">
-                                        <span class="text-xl mr-2">🚗</span> <span class="font-bold text-sm text-gray-800">Jalan-jalan Santai</span>
-                                    </label>
-                                    <label class="flex items-center p-3 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/70 cursor-pointer transition">
-                                        <input type="radio" name="chosenActivity" value="Momotoran 🛵" class="mr-3">
-                                        <span class="text-xl mr-2">🛵</span> <span class="font-bold text-sm text-gray-800">Momotoran Angin-anginan</span>
-                                    </label>
-                                    <label class="flex items-center p-3 rounded-2xl border-2 border-gray-200 hover:border-pink-400 bg-white/70 cursor-pointer transition">
-                                        <input type="radio" name="chosenActivity" value="Jajan-jajan 🧋" class="mr-3">
-                                        <span class="text-xl mr-2">🧋</span> <span class="font-bold text-sm text-gray-800">Berburu Jajanan / Kuliner</span>
-                                    </label>
-                                </div>
+            <!-- TAB 3: POHON KENANGAN -->
+            <section id="tab-tree" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 border-b border-rose-100 pb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-tree"></i>
                             </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Tanggal</label>
-                                    <input type="date" id="inputDate" required class="w-full bg-white border-2 border-gray-200 focus:border-pink-500 rounded-xl p-3 text-xs font-medium outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Jam Berapa</label>
-                                    <input type="time" id="inputTime" value="15:30" required class="w-full bg-white border-2 border-gray-200 focus:border-pink-500 rounded-xl p-3 text-xs font-medium outline-none">
-                                </div>
-                            </div>
-
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Catatan Tambahan (Opsional)</label>
-                                <input type="text" id="inputNote" placeholder="Contoh: Jemput aku di rumah ya!" class="w-full bg-white border-2 border-gray-200 focus:border-pink-500 rounded-xl p-3 text-xs outline-none">
+                                <h2 class="text-2xl font-bold text-slate-800">Pohon Kenangan Kita 🌳</h2>
+                                <p class="text-xs text-slate-500">Tersimpan langsung di database cloud untuk kalian berdua.</p>
                             </div>
-
-                            <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
-                                <i class="fas fa-paper-plane"></i> Simpan & Kirim ke Pasangan
-                            </button>
-                        </form>
-
+                        </div>
+                        <button onclick="openAddPhotoModal()" class="px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-semibold shadow-md hover:bg-emerald-700 transition flex items-center">
+                            <i class="fa-solid fa-plus mr-1.5"></i> Tambah Foto Kenangan
+                        </button>
                     </div>
+                    <div id="photoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </div>
             </section>
 
@@ -226,6 +170,7 @@
             <section id="tab-settings" class="tab-content hidden space-y-6">
                 <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto space-y-8">
                     
+                    <!-- Form Pengaturan Utama -->
                     <div class="space-y-4">
                         <div class="flex items-center space-x-3 border-b border-rose-100 pb-4">
                             <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl">
@@ -233,7 +178,7 @@
                             </div>
                             <div>
                                 <h2 class="text-xl font-bold text-slate-800">Pengaturan Utama Website</h2>
-                                <p class="text-slate-500 text-xs">Perubahan tanggal jadian & nama akan langsung tersinkron ke semua akun.</p>
+                                <p class="text-slate-500 text-xs">Perubahan di sini akan langsung memperbarui tampilan di semua akun.</p>
                             </div>
                         </div>
 
@@ -252,6 +197,7 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tanggal Mulai Hubungan / Jadian</label>
                                 <input type="date" id="settingStartDate" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm">
+                                <p class="text-[11px] text-slate-400 mt-1">*Sistem otomatis menghitung jumlah hari dari tanggal ini sampai hari ini secara terus-menerus.</p>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -298,6 +244,7 @@
                             </button>
                         </form>
 
+                        <!-- Daftar Akun Terdaftar -->
                         <div id="accountListContainer" class="space-y-2"></div>
                     </div>
 
@@ -305,6 +252,22 @@
             </section>
 
         </main>
+    </div>
+
+    <!-- ==================== MODAL TAMBAH FOTO ==================== -->
+    <div id="addPhotoModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Tambah Kenangan Baru 🌳</h3>
+                <button onclick="closeAddPhotoModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleSavePhoto(event)" class="space-y-4">
+                <input type="url" id="photoUrl" required placeholder="Link URL Foto (https://...)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <input type="date" id="photoDate" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
+                <textarea id="photoCaption" required rows="2" placeholder="Cerita singkat momen ini..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
+                <button type="submit" class="w-full py-3 bg-emerald-600 text-white font-semibold rounded-xl text-sm hover:bg-emerald-700 transition">Simpan ke Database</button>
+            </form>
+        </div>
     </div>
 
     <!-- ==================== HALAMAN LOGIN ==================== -->
@@ -321,11 +284,11 @@
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Username</label>
-                    <input type="text" id="loginUsername" required placeholder="Default admin: admin" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/90 text-sm">
+                    <input type="text" id="loginUsername" required placeholder="masukkan username" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/90 text-sm">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Password</label>
-                    <input type="password" id="loginPassword" required placeholder="Default admin: 1234" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/90 text-sm">
+                    <input type="password" id="loginPassword" required placeholder="masukkan password" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/90 text-sm">
                 </div>
                 <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-rose-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:opacity-95 transition">
                     Masuk Ruang Cinta <i class="fa-solid fa-arrow-right ml-2"></i>
@@ -339,7 +302,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getDatabase, ref, set, push, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-        // GANTI DENGAN FIREBASE CONFIG MILIK ANDA
+        // 1. GANTI KONFIGURASI INI DENGAN MILIK ANDA DARI FIREBASE CONSOLE
         const firebaseConfig = {
             apiKey: "ISI_API_KEY_ANDA",
             authDomain: "ISI_PROJECT_ID.firebaseapp.com",
@@ -350,9 +313,11 @@
             appId: "ISI_APP_ID"
         };
 
+        // Inisialisasi Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // State Global Aplikasi
         let cloudData = {
             settings: {
                 name1: 'Sayang',
@@ -362,29 +327,26 @@
                 activeGameType: 'quiz'
             },
             accounts: {},
-            datingSchedule: {
-                activity: 'Nonton Bioskop 🎬',
-                date: '',
-                time: '15:30',
-                note: ''
-            },
+            photos: {},
             questions: {}
         };
 
-        let currentUser = null;
+        let currentUser = null; // Menyimpan objek { username, role } yang sedang login
 
+        // 2. LISTENER REAL-TIME KE DATABASE FIREBASE
+        // Setiap kali ada perubahan di database (dari HP/Laptop mana pun), fungsi ini otomatis jalan!
         const rootRef = ref(db, 'ruangCinta');
         onValue(rootRef, (snapshot) => {
             const val = snapshot.val();
-            document.getElementById('dbStatusLabel').innerText = "Database Terhubung (Admin default: admin / 1234)";
+            document.getElementById('dbStatusLabel').innerText = "Database Terhubung (Akun Admin default: admin / 1234)";
 
             if (!val || !val.accounts) {
+                // Inisialisasi data awal + Akun Admin otomatis jika database masih kosong
                 const initialData = {
                     settings: cloudData.settings,
                     accounts: {
                         admin_utama: { username: 'admin', password: '1234', role: 'admin' }
-                    },
-                    datingSchedule: cloudData.datingSchedule
+                    }
                 };
                 set(rootRef, initialData);
                 return;
@@ -392,14 +354,16 @@
 
             cloudData.settings = val.settings || cloudData.settings;
             cloudData.accounts = val.accounts || {};
-            cloudData.datingSchedule = val.datingSchedule || cloudData.datingSchedule;
+            cloudData.photos = val.photos || {};
             cloudData.questions = val.questions || {};
 
+            // Jika user sudah login, langsung perbarui seluruh tampilan layar secara real-time
             if (currentUser) {
                 refreshUI();
             }
         });
 
+        // 3. SISTEM LOGIN DINAMIS DARI DATABASE
         window.handleLogin = function(event) {
             event.preventDefault();
             const inputUser = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -409,7 +373,7 @@
             const matchedAccount = accountList.find(acc => acc.username.toLowerCase() === inputUser && acc.password === inputPass);
 
             if (!matchedAccount) {
-                alert("Username atau Password salah!");
+                alert("Username atau Password salah! Pastikan akun sudah dibuat oleh Admin.");
                 return;
             }
 
@@ -426,6 +390,7 @@
             location.reload();
         };
 
+        // Cek sesi login saat halaman dimuat ulang
         window.addEventListener('DOMContentLoaded', () => {
             const savedSession = sessionStorage.getItem('logged_user');
             if (savedSession) {
@@ -433,14 +398,10 @@
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
             }
-            // Set default date besok di input kencan
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('inputDate').value = tomorrow.toISOString().split('T')[0];
-
             setInterval(updateCounter, 1000);
         });
 
+        // 4. MEMPERBARUI TAMPILAN REAL-TIME
         function refreshUI() {
             const s = cloudData.settings;
             document.getElementById('displayCoupleNames').innerText = `${s.name1} & ${s.name2}`;
@@ -456,8 +417,10 @@
                 document.getElementById('settingsNavBtn').classList.add('hidden');
             }
 
-            document.getElementById('statusBadgeHeader').innerText = s.relationshipStatus === 'Pacaran' ? '💍 Pacaran' : s.relationshipStatus === 'Suami Istri' ? '❤️ Suami Istri' : '🤝 Teman';
+            const statusBadge = document.getElementById('statusBadgeHeader');
+            statusBadge.innerText = s.relationshipStatus === 'Pacaran' ? '💍 Pacaran' : s.relationshipStatus === 'Suami Istri' ? '❤️ Suami Istri' : '🤝 Teman';
 
+            // Isi form pengaturan admin dengan data terbaru
             document.getElementById('settingName1').value = s.name1;
             document.getElementById('settingName2').value = s.name2;
             document.getElementById('settingStartDate').value = s.startDate;
@@ -465,13 +428,13 @@
             document.getElementById('settingGameType').value = s.activeGameType;
 
             updateCounter();
-            renderDatingSchedule();
+            renderPhotos();
             renderQuestions();
             renderAccountList();
             renderGame();
         }
 
-        // Kalkulator Hari Otomatis
+        // 5. KALKULATOR HARI OTOMATIS (BERJALAN TERUS SETIAP HARI)
         function updateCounter() {
             const startDateStr = cloudData.settings?.startDate;
             if (!startDateStr) return;
@@ -488,7 +451,7 @@
             document.getElementById('counterSeconds').innerText = Math.floor((diff / 1000) % 60);
         }
 
-        // Simpan Pengaturan Admin
+        // 6. SIMPAN PENGATURAN KE FIREBASE (KHUSUS ADMIN)
         window.handleSaveSettings = function(event) {
             event.preventDefault();
             if (currentUser.role !== 'admin') return;
@@ -502,47 +465,13 @@
             };
 
             set(ref(db, 'ruangCinta/settings'), updatedSettings)
-                .then(() => alert("Pengaturan berhasil disinkronkan ke cloud!"));
+                .then(() => {
+                    alert("Berhasil! Pengaturan langsung tersinkron ke semua perangkat.");
+                    switchTab('dashboard');
+                });
         };
 
-        // Simpan Jadwal Ajak Main (Tab Ayo Main!) ke Database
-        window.handleSaveSchedule = function(event) {
-            event.preventDefault();
-            const selectedAct = document.querySelector('input[name="chosenActivity"]:checked').value;
-            const dateVal = document.getElementById('inputDate').value;
-            const timeVal = document.getElementById('inputTime').value;
-            const noteVal = document.getElementById('inputNote').value.trim();
-
-            const scheduleData = {
-                activity: selectedAct,
-                date: dateVal,
-                time: timeVal,
-                note: noteVal,
-                updatedBy: currentUser.username
-            };
-
-            set(ref(db, 'ruangCinta/datingSchedule'), scheduleData)
-                .then(() => alert("Berhasil! Jadwal kencan tersimpan dan langsung terlihat di akun pasangan. 💕"));
-        };
-
-        function renderDatingSchedule() {
-            const ds = cloudData.datingSchedule;
-            if (!ds || !ds.activity) return;
-
-            document.getElementById('savedActDisplay').innerText = ds.activity;
-            document.getElementById('savedTimeDisplay').innerText = `📅 ${ds.date} • Pukul ${ds.time} WIB (Diatur oleh: @${ds.updatedBy || 'Admin'})`;
-            
-            const noteEl = document.getElementById('savedNoteDisplay');
-            if (ds.note) {
-                noteEl.innerText = `Catatan: "${ds.note}"`;
-                noteEl.classList.remove('hidden');
-            } else {
-                noteEl.classList.add('hidden');
-            }
-            document.getElementById('activeScheduleBox').classList.remove('hidden');
-        }
-
-        // Kelola Akun
+        // 7. TAMBAH & HAPUS AKUN BARU (KHUSUS ADMIN)
         window.handleAddAccount = function(event) {
             event.preventDefault();
             if (currentUser.role !== 'admin') return;
@@ -551,14 +480,20 @@
             const password = document.getElementById('newAccPassword').value.trim();
 
             const newAccRef = push(ref(db, 'ruangCinta/accounts'));
-            set(newAccRef, { username, password, role: 'user' }).then(() => {
+            set(newAccRef, {
+                username: username,
+                password: password,
+                role: 'user'
+            }).then(() => {
                 event.target.reset();
                 alert(`Akun "${username}" berhasil ditambahkan!`);
             });
         };
 
         window.deleteAccount = function(key) {
-            if (confirm("Hapus akun ini?")) remove(ref(db, `ruangCinta/accounts/${key}`));
+            if (confirm("Hapus akun ini?")) {
+                remove(ref(db, `ruangCinta/accounts/${key}`));
+            }
         };
 
         function renderAccountList() {
@@ -571,17 +506,61 @@
                         <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-500 ml-1">${acc.role}</span>
                         <span class="text-slate-400 ml-2">Pass: ${acc.password}</span>
                     </div>
-                    ${acc.role !== 'admin' ? `<button onclick="deleteAccount('${key}')" class="text-rose-500 hover:underline">Hapus</button>` : '<span class="text-[10px] text-purple-600 font-semibold">Utama</span>'}
+                    ${acc.role !== 'admin' ? `<button onclick="deleteAccount('${key}')" class="text-rose-500 hover:underline">Hapus</button>` : '<span class="text-[10px] text-purple-600 font-semibold">Akun Utama</span>'}
                 </div>
             `).join('');
         }
 
-        // Q&A Real-time
+        // 8. POHON KENANGAN (REAL-TIME)
+        window.openAddPhotoModal = () => document.getElementById('addPhotoModal').classList.remove('hidden');
+        window.closeAddPhotoModal = () => document.getElementById('addPhotoModal').classList.add('hidden');
+
+        window.handleSavePhoto = function(event) {
+            event.preventDefault();
+            const newPhotoRef = push(ref(db, 'ruangCinta/photos'));
+            set(newPhotoRef, {
+                url: document.getElementById('photoUrl').value.trim(),
+                date: document.getElementById('photoDate').value,
+                caption: document.getElementById('photoCaption').value.trim()
+            }).then(() => {
+                closeAddPhotoModal();
+                event.target.reset();
+            });
+        };
+
+        window.deletePhoto = (key) => remove(ref(db, `ruangCinta/photos/${key}`));
+
+        function renderPhotos() {
+            const grid = document.getElementById('photoGrid');
+            const entries = Object.entries(cloudData.photos);
+            if (entries.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400 text-sm">Belum ada foto kenangan di database.</div>`;
+                return;
+            }
+            grid.innerHTML = entries.reverse().map(([key, p]) => `
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-rose-100 flex flex-col">
+                    <div class="h-48 relative bg-slate-100">
+                        <img src="${p.url}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/f43f5e/ffffff?text=Kenangan'">
+                        <span class="absolute bottom-2 right-2 px-2 py-1 bg-black/60 text-white rounded-lg text-[10px]">${p.date}</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <p class="text-xs text-slate-700 mb-3">${p.caption}</p>
+                        <button onclick="deletePhoto('${key}')" class="text-rose-500 text-xs font-semibold self-start"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 9. TANYA JAWAB (REAL-TIME)
         window.handlePostQuestion = function(event) {
             event.preventDefault();
             const input = document.getElementById('questionInput');
-            const newQRef = push(ref(db, 'ruangCintaan/questions') || ref(db, 'ruangCinta/questions'));
-            set(newQRef, { author: currentUser.username, text: input.value.trim(), answer: '' }).then(() => input.value = '');
+            const newQRef = push(ref(db, 'ruangCinta/questions'));
+            set(newQRef, {
+                author: currentUser.username,
+                text: input.value.trim(),
+                answer: ''
+            }).then(() => input.value = '');
         };
 
         window.answerQuestion = function(key) {
@@ -594,7 +573,7 @@
 
         function renderQuestions() {
             const list = document.getElementById('questionList');
-            const entries = Object.entries(cloudData.questions || {});
+            const entries = Object.entries(cloudData.questions);
             if (entries.length === 0) {
                 list.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Belum ada pertanyaan.</div>`;
                 return;
@@ -620,6 +599,7 @@
             `).join('');
         }
 
+        // 10. MINI GAME & NAVIGASI TAB
         function renderGame() {
             const container = document.getElementById('activeGameContainer');
             if (cloudData.settings.activeGameType === 'truth') {
