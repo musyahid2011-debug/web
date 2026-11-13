@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartu Ucapan & Permintaan Maaf Spesial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti untuk efek perayaan -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 40%, #fef3c7 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .font-serif-elegant {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Animasi lembut mengambang */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        /* Animasi muncul kartu */
+        @keyframes cardReveal {
+            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-card-reveal {
+            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        /* Efek kaca (Glassmorphism) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 40px -15px rgba(225, 29, 72, 0.12);
+        }
+        /* Area Game */
+        #game-arena {
+            position: relative;
+            touch-action: manipulation;
+            user-select: none;
+            overflow: hidden;
+        }
+        .falling-heart {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            user-select: none;
+            filter: drop-shadow(0 4px 6px rgba(244, 63, 94, 0.3));
+        }
+        .falling-heart:active {
+            transform: scale(1.3);
+        }
+    </style>
+</head>
+<body class="text-slate-700 flex flex-col items-center justify-center p-4 sm:p-6">
+
+    <!-- Toast Notification (Pengganti alert) -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4">
+        <div id="toast-content" class="bg-slate-800 text-white px-5 py-3 rounded-full shadow-lg text-sm font-medium flex items-center gap-2">
+            <span id="toast-icon">✨</span>
+            <span id="toast-message">Pesan notifikasi</span>
+        </div>
+    </div>
+
+    <!-- Header / Indikator Langkah -->
+    <header class="w-full max-w-lg mb-6 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 text-rose-600 text-xs font-semibold shadow-sm mb-3 border border-rose-100">
+            <span>💌</span> Kartu Ucapan & Maaf Interaktif
+        </div>
+        <h1 class="font-serif-elegant text-2xl sm:text-3xl font-bold text-slate-800">
+            Sampaikan Maaf dengan Tulus
+        </h1>
+
+        <!-- Stepper Progress -->
+        <div class="flex items-center justify-center gap-2 mt-4">
+            <div id="step-dot-1" class="h-2.5 w-8 rounded-full bg-rose-500 transition-all duration-300"></div>
+            <div id="step-dot-2" class="h-2.5 w-2.5 rounded-full bg-rose-200 transition-all duration-300"></div>
+            <div id="step-dot-3" class="h-2.5 w-2.5 rounded-full bg-rose-200 transition-all duration-300"></div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-lg">
+
+        <!-- ========================================== -->
+        <!-- BAGIAN 1: FORM INPUT IDENTITAS & UCAPAN    -->
+        <!-- ========================================== -->
+        <section id="step-1" class="glass-card rounded-3xl p-6 sm:p-8 animate-card-reveal">
+            <div class="mb-5">
+                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-sm">1</span>
+                    Lengkapi Data & Ucapan
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Isi tujuan pengiriman dan pilih kata-kata permintaan maaf terbaikmu.</p>
+            </div>
+
+            <form id="setup-form" class="space-y-4">
+                <!-- Grid Nama Pengirim & Penerima -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="sender-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Kamu (Pengirim) *</label>
+                        <input type="text" id="sender-name" required placeholder="Contoh: Budi"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-rose-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition">
+                    </div>
+                    <div>
+                        <label for="receiver-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Tujuan (Penerima) *</label>
+                        <input type="text" id="receiver-name" required placeholder="Contoh: Siti / Sayang"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-rose-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition">
+                    </div>
+                </div>
+
+                <!-- Nomor WhatsApp Tujuan -->
+                <div>
+                    <label for="wa-number" class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Tujuan *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm font-medium">📱</span>
+                        <input type="tel" id="wa-number" required placeholder="Contoh: 081234567890 atau 62812..."
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-rose-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition">
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Otomatis dikonversi ke format internasional WhatsApp (628xxx).</p>
+                </div>
+
+                <!-- Pilihan Template Ucapan -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Pilih Tema Ucapan Maaf</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button type="button" onclick="selectTemplate('pasangan')" id="tpl-pasangan"
+                            class="tpl-btn active-tpl px-3 py-2 rounded-xl text-xs font-semibold border border-rose-400 bg-rose-500 text-white transition shadow-sm">
+                            ❤️ Pasangan
+                        </button>
+                        <button type="button" onclick="selectTemplate('sahabat')" id="tpl-sahabat"
+                            class="tpl-btn px-3 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-white text-slate-600 hover:bg-rose-50 transition">
+                            🤝 Sahabat
+                        </button>
+                        <button type="button" onclick="selectTemplate('keluarga')" id="tpl-keluarga"
+                            class="tpl-btn px-3 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-white text-slate-600 hover:bg-rose-50 transition">
+                            🏡 Keluarga
+                        </button>
+                        <button type="button" onclick="selectTemplate('custom')" id="tpl-custom"
+                            class="tpl-btn px-3 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-white text-slate-600 hover:bg-rose-50 transition">
+                            ✍️ Tulis Sendiri
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Textarea Isi Ucapan -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label for="message-text" class="block text-xs font-semibold text-slate-700">Isi Kata-Kata Ucapan Maaf *</label>
+                        <span id="char-count" class="text-[11px] text-slate-400">0 karakter</span>
+                    </div>
+                    <textarea id="message-text" rows="4" required placeholder="Tuliskan isi hati dan permintaan maafmu di sini..."
+                        class="w-full p-3.5 rounded-xl bg-white border border-rose-200/80 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition"></textarea>
+                </div>
+
+                <!-- Tombol Lanjut ke Game -->
+                <button type="submit"
+                    class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm shadow-lg shadow-rose-500/30 transform active:scale-[0.98] transition flex items-center justify-center gap-2">
+                    <span>Mulai & Mainkan Mini Game</span>
+                    <span>🎮</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BAGIAN 2: MINI GAME SEDERHANA & MENARIK     -->
+        <!-- ========================================== -->
+        <section id="step-2" class="hidden glass-card rounded-3xl p-6 sm:p-8 animate-card-reveal">
+            <div class="text-center mb-4">
+                <span class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold mb-2">
+                    Misi Membuka Kartu ✨
+                </span>
+                <h2 class="text-lg sm:text-xl font-bold text-slate-800">
+                    Kumpulkan <span class="text-rose-500">5 Hati</span> & Jawab Pertanyaan!
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">
+                    Ketuk hati yang jatuh untuk mencairkan suasana sebelum membuka surat maaf.
+                </p>
+            </div>
+
+            <!-- Bar Skor & Progress -->
+            <div class="flex items-center justify-between bg-white/90 px-4 py-2.5 rounded-2xl border border-rose-100 mb-3">
+                <span class="text-xs font-bold text-slate-600">Hati Terkumpul:</span>
+                <div class="flex items-center gap-1.5" id="heart-progress-icons">
+                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-1">💖</span>
+                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-2">💖</span>
+                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-3">💖</span>
+                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-4">💖</span>
+                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-5">💖</span>
+                </div>
+                <span id="score-badge" class="text-xs font-extrabold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">0 / 5</span>
+            </div>
+
+            <!-- Arena Mini Game Tangkap Hati -->
+            <div id="game-arena" class="w-full h-64 sm:h-72 rounded-2xl bg-gradient-to-b from-rose-50/90 to-amber-50/90 border-2 border-dashed border-rose-200 relative flex flex-col items-center justify-center">
+                <!-- Pesan Panduan Awal di dalam Arena -->
+                <div id="game-start-overlay" class="text-center p-4 z-10">
+                    <div class="text-4xl mb-2 animate-float">💝</div>
+                    <p class="text-xs sm:text-sm font-medium text-slate-600 mb-3">Tangkap 5 hati yang berjatuhan!</p>
+                    <button type="button" onclick="startHeartGame()"
+                        class="px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-md transition transform active:scale-95">
+                        Mulai Tangkap Hati
+                    </button>
+                </div>
+
+                <!-- Tahap Interaktif Lucu Setelah 5 Hati Terkumpul (Tombol Menghindar) -->
+                <div id="forgive-challenge-overlay" class="hidden text-center p-4 z-20 w-full h-full flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
+                    <div class="text-3xl mb-1">🥺👉👈</div>
+                    <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-1">
+                        Hati sudah terkumpul!
+                    </h3>
+                    <p class="text-xs text-slate-600 mb-4 max-w-xs">
+                        Pertanyaan terakhir sebelum surat terbuka: <br><strong>Sudah siap memaafkan?</strong>
+                    </p>
+                    <div class="relative w-full h-24 flex items-center justify-center gap-4" id="dodge-container">
+                        <button type="button" onclick="completeGame()"
+                            class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 z-10">
+                            Iya, Dimaafkan 💖
+                        </button>
+                        <button type="button" id="runaway-btn"
+                            class="px-4 py-2.5 rounded-xl bg-slate-200 text-slate-600 text-xs font-semibold transition-all duration-150">
+                            Belum Maaf 😤
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigasi Bawah Game -->
+            <div class="mt-4 flex justify-between items-center">
+                <button type="button" onclick="goToStep(1)" class="text-xs font-semibold text-slate-500 hover:text-rose-600 transition">
+                    ← Edit Ucapan
+                </button>
+                <button type="button" onclick="completeGame()" class="text-[11px] text-slate-400 hover:text-slate-600 underline">
+                    Lewati Game
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BAGIAN 3: KARTU UCAPAN & KIRIM WHATSAPP    -->
+        <!-- ========================================== -->
+        <section id="step-3" class="hidden animate-card-reveal">
+            <!-- Kartu Digital Estetik -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden border-2 border-rose-200/80">
+                <!-- Dekorasi Sudut -->
+                <div class="absolute -top-6 -right-6 w-24 h-24 bg-rose-200/40 rounded-full blur-xl pointer-events-none"></div>
+                <div class="absolute -bottom-6 -left-6 w-28 h-28 bg-amber-200/40 rounded-full blur-xl pointer-events-none"></div>
+
+                <!-- Header Kartu -->
+                <div class="text-center border-b border-rose-100 pb-4 mb-5">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-100 text-2xl mb-2 animate-float">
+                        💌
+                    </div>
+                    <p class="text-xs uppercase tracking-widest text-rose-500 font-bold">Surat Permintaan Maaf</p>
+                    <h2 class="font-serif-elegant text-xl sm:text-2xl font-bold text-slate-800 mt-1">
+                        Untuk <span id="card-receiver" class="text-rose-600">Penerima</span>
+                    </h2>
+                </div>
+
+                <!-- Isi Pesan Maaf -->
+                <div class="bg-white/75 rounded-2xl p-5 border border-rose-100/80 shadow-inner mb-5">
+                    <p id="card-message" class="text-sm sm:text-base text-slate-700 leading-relaxed whitespace-pre-line italic">
+                        Isi ucapan maaf akan muncul di sini...
+                    </p>
+                </div>
+
+                <!-- Tanda Tangan Pengirim -->
+                <div class="flex items-center justify-between text-xs sm:text-sm mb-6 px-1">
+                    <div>
+                        <span class="text-slate-400 block text-[11px]">Tujuan WhatsApp:</span>
+                        <span id="card-wa-display" class="font-semibold text-slate-600">+628xxx</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-slate-400 block text-[11px]">Dengan tulus,</span>
+                        <span id="card-sender" class="font-serif-elegant font-bold text-base text-slate-800">Pengirim</span>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi Utama: Kirim ke WhatsApp -->
+                <div class="space-y-3">
+                    <button type="button" onclick="sendToWhatsApp()"
+                        class="w-full py-3.5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-sm shadow-lg shadow-emerald-500/30 transform active:scale-[0.98] transition flex items-center justify-center gap-2.5">
+                        <!-- Ikon SVG WhatsApp -->
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
+                        </svg>
+                        <span>Kirim ke WhatsApp Sekarang</span>
+                    </button>
+
+                    <!-- Tombol Sekunder: Salin & Buat Ulang -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button type="button" onclick="copyMessageText()"
+                            class="py-2.5 px-4 rounded-xl bg-white hover:bg-rose-50 text-slate-700 border border-rose-200 font-semibold text-xs transition flex items-center justify-center gap-1.5">
+                            <span>📋</span> Salin Teks
+                        </button>
+                        <button type="button" onclick="resetApp()"
+                            class="py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 font-semibold text-xs transition flex items-center justify-center gap-1.5">
+                            <span>🔄</span> Buat Ulang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Kecil -->
+    <footer class="mt-8 text-center text-[11px] text-slate-400">
+        Dibuat dengan sepenuh hati untuk menyambung kembali silaturahmi & kasih sayang ✨
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ==========================================
+        // 1. STATE & DATA TEMPLATE UCAPAN
+        // ==========================================
+        const templates = {
+            pasangan: "Hai sayang, aku minta maaf ya atas sikap dan kata-kataku yang bikin kamu kecewa. Aku sama sekali nggak bermaksud nyakitin perasaanmu. Kamu sangat berarti buat aku, maafin aku ya? ❤️",
+            sahabat: "Halo sobat, maafin aku ya kalau akhir-akhir ini aku ada salah kata atau sikap yang kurang berkenan di hati kamu. Persahabatan kita jauh lebih berharga dari ego masing-masing. Maaf ya! 🤝",
+            keluarga: "Assalamualaikum / Halo, dengan segala kerendahan hati aku memohon maaf atas segala khilaf, ucapan, maupun sikapku yang kurang berkenan. Semoga kita selalu diberikan keharmonisan dan kebahagiaan. 🏡",
+            custom: ""
+        };
+
+        let appData = {
+            sender: "",
+            receiver: "",
+            rawPhone: "",
+            formattedPhone: "",
+            message: ""
+        };
+
+        let gameScore = 0;
+        const targetScore = 5;
+        let heartInterval = null;
+        let isGameRunning = false;
+
+        // ==========================================
+        // 2. INISIALISASI HALAMAN
+        // ==========================================
+        const messageInput = document.getElementById('message-text');
+        const charCount = document.getElementById('char-count');
+
+        // Set template default saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            selectTemplate('pasangan');
+            setupRunawayButton();
+        });
+
+        // Update penghitung karakter saat mengetik
+        messageInput.addEventListener('input', () => {
+            charCount.textContent = `${messageInput.value.length} karakter`;
+        });
+
+        // Fungsi memilih template ucapan
+        function selectTemplate(type) {
+            // Reset style semua tombol template
+            document.querySelectorAll('.tpl-btn').forEach(btn => {
+                btn.classList.remove('bg-rose-500', 'text-white', 'border-rose-400', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-600', 'border-rose-200');
+            });
+
+            // Aktifkan tombol yang dipilih
+            const activeBtn = document.getElementById(`tpl-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-slate-600', 'border-rose-200');
+                activeBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-400', 'shadow-sm');
+            }
+
+            // Isi textarea sesuai template
+            if (type !== 'custom') {
+                messageInput.value = templates[type];
+            } else {
+                messageInput.value = "";
+                messageInput.focus();
+            }
+            charCount.textContent = `${messageInput.value.length} karakter`;
+        }
+
+        // ==========================================
+        // 3. VALIDASI FORM & KONVERSI NOMOR WA
+        // ==========================================
+        function formatWhatsAppNumber(input) {
+            // Hapus semua karakter selain angka
+            let cleaned = input.replace(/\D/g, '');
+            
+            // Jika diawali '0', ganti dengan '62'
+            if (cleaned.startsWith('0')) {
+                cleaned = '62' + cleaned.substring(1);
+            } 
+            // Jika diawali '8' (tanpa 0 atau 62), tambahkan '62'
+            else if (cleaned.startsWith('8')) {
+                cleaned = '62' + cleaned;
+            }
+            return cleaned;
+        }
+
+        document.getElementById('setup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const sender = document.getElementById('sender-name').value.trim();
+            const receiver = document.getElementById('receiver-name').value.trim();
+            const rawPhone = document.getElementById('wa-number').value.trim();
+            const message = messageInput.value.trim();
+
+            const formattedPhone = formatWhatsAppNumber(rawPhone);
+
+            // Validasi panjang nomor WA minimal (misal 628xxxxxxxx -> min 10 digit)
+            if (formattedPhone.length < 10) {
+                showToast("Nomor WhatsApp tidak valid. Contoh: 08123456789", "⚠️");
+                document.getElementById('wa-number').focus();
+                return;
+            }
+
+            if (!message) {
+                showToast("Tuliskan kata-kata ucapan maaf terlebih dahulu.", "✍️");
+                messageInput.focus();
+                return;
+            }
+
+            // Simpan data ke state
+            appData = {
+                sender,
+                receiver,
+                rawPhone,
+                formattedPhone,
+                message
+            };
+
+            // Reset game & pindah ke Langkah 2
+            resetGameUI();
+            goToStep(2);
+        });
+
+        // ==========================================
+        // 4. NAVIGASI ANTAR LANGKAH (STEPPER)
+        // ==========================================
+        function goToStep(stepNumber) {
+            // Sembunyikan semua section
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.add('hidden');
+
+            // Tampilkan section tujuan
+            document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+
+            // Update indikator titik di header
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById(`step-dot-${i}`);
+                if (i === stepNumber) {
+                    dot.classList.remove('w-2.5', 'bg-rose-200');
+                    dot.classList.add('w-8', 'bg-rose-500');
+                } else if (i < stepNumber) {
+                    dot.classList.remove('w-8', 'bg-rose-200');
+                    dot.classList.add('w-2.5', 'bg-rose-400');
+                } else {
+                    dot.classList.remove('w-8', 'bg-rose-500', 'bg-rose-400');
+                    dot.classList.add('w-2.5', 'bg-rose-200');
+                }
+            }
+
+            // Hentikan interval game jika keluar dari step 2
+            if (stepNumber !== 2 && heartInterval) {
+                clearInterval(heartInterval);
+                isGameRunning = false;
+            }
+        }
+
+        // ==========================================
+        // 5. LOGIKA MINI GAME (TANGKAP HATI & TOMBOL MENGHINDAR)
+        // ==========================================
+        function resetGameUI() {
+            gameScore = 0;
+            isGameRunning = false;
+            if (heartInterval) clearInterval(heartInterval);
+
+            document.getElementById('score-badge').textContent = `0 / ${targetScore}`;
+            for (let i = 1; i <= targetScore; i++) {
+                document.getElementById(`h-icon-${i}`).classList.add('opacity-30');
+                document.getElementById(`h-icon-${i}`).classList.remove('scale-125');
+            }
+
+            // Bersihkan hati yang tersisa di arena
+            document.querySelectorAll('.falling-heart').forEach(el => el.remove());
+
+            document.getElementById('game-start-overlay').classList.remove('hidden');
+            document.getElementById('forgive-challenge-overlay').classList.add('hidden');
+        }
+
+        function startHeartGame() {
+            if (isGameRunning) return;
+            isGameRunning = true;
+            document.getElementById('game-start-overlay').classList.add('hidden');
+
+            // Munculkan hati pertama langsung
+            spawnFallingHeart();
+
+            // Munculkan hati setiap 650ms
+            heartInterval = setInterval(() => {
+                if (gameScore < targetScore) {
+                    spawnFallingHeart();
+                } else {
+                    clearInterval(heartInterval);
+                }
+            }, 650);
+        }
+
+        function spawnFallingHeart() {
+            const arena = document.getElementById('game-arena');
+            if (!arena || !isGameRunning) return;
+
+            const heart = document.createElement('div');
+            const emojis = ['💖', '💝', '💗', '💓', '🌸'];
+            heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.className = 'falling-heart text-3xl sm:text-4xl p-2';
+
+            // Posisi horizontal acak (dengan padding agar tidak terpotong)
+            const arenaWidth = arena.clientWidth;
+            const randomX = Math.max(15, Math.floor(Math.random() * (arenaWidth - 60)));
+            heart.style.left = `${randomX}px`;
+            heart.style.top = '-45px';
+
+            arena.appendChild(heart);
+
+            // Animasi jatuh menggunakan requestAnimationFrame
+            let posY = -45;
+            const speed = 2.2 + Math.random() * 1.8; // Kecepatan ramah pengguna
+            const arenaHeight = arena.clientHeight;
+
+            function fall() {
+                if (!heart.parentNode || !isGameRunning) return;
+                posY += speed;
+                heart.style.top = `${posY}px`;
+
+                if (posY < arenaHeight + 20) {
+                    requestAnimationFrame(fall);
+                } else {
+                    heart.remove();
+                }
+            }
+            requestAnimationFrame(fall);
+
+            // Event saat hati diklik / disentuh
+            const catchHandler = (e) => {
+                e.preventDefault();
+                if (!heart.parentNode) return;
+                heart.remove();
+                incrementScore();
+            };
+
+            heart.addEventListener('pointerdown', catchHandler);
+        }
+
+        function incrementScore() {
+            if (gameScore >= targetScore) return;
+            gameScore++;
+
+            // Update UI skor & ikon hati
+            document.getElementById('score-badge').textContent = `${gameScore} / ${targetScore}`;
+            const icon = document.getElementById(`h-icon-${gameScore}`);
+            if (icon) {
+                icon.classList.remove('opacity-30');
+                icon.classList.add('scale-125');
+                setTimeout(() => icon.classList.remove('scale-125'), 200);
+            }
+
+            // Jika mencapai 5 hati, munculkan tantangan tombol menghindar
+            if (gameScore >= targetScore) {
+                isGameRunning = false;
+                clearInterval(heartInterval);
+                document.querySelectorAll('.falling-heart').forEach(el => el.remove());
+
+                setTimeout(() => {
+                    document.getElementById('forgive-challenge-overlay').classList.remove('hidden');
+                }, 300);
+            }
+        }
+
+        // Logika Tombol "Belum Maaf" yang menghindar lucu saat didekati/diklik
+        function setupRunawayButton() {
+            const btn = document.getElementById('runaway-btn');
+            const container = document.getElementById('dodge-container');
+
+            const moveButton = (e) => {
+                if (e) e.preventDefault();
+                const containerRect = container.getBoundingClientRect();
+                const btnRect = btn.getBoundingClientRect();
+
+                const maxX = Math.max(10, containerRect.width - btnRect.width - 10);
+                const maxY = Math.max(10, containerRect.height - btnRect.height - 10);
+
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+
+                btn.style.position = 'absolute';
+                btn.style.left = `${randomX}px`;
+                btn.style.top = `${randomY}px`;
+            };
+
+            btn.addEventListener('mouseover', moveButton);
+            btn.addEventListener('pointerdown', moveButton);
+        }
+
+        // Menyelesaikan game & membuka Kartu Ucapan (Langkah 3)
+        function completeGame() {
+            // Efek Konfeti Meriah
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 65,
+                    origin: { y: 0.6 },
+                    colors: ['#f43f5e', '#fb7185', '#fbbf24', '#34d399']
+                });
+            }
+
+            // Isi data ke Kartu Ucapan di Langkah 3
+            document.getElementById('card-receiver').textContent = appData.receiver;
+            document.getElementById('card-sender').textContent = appData.sender;
+            document.getElementById('card-message').textContent = `"${appData.message}"`;
+            document.getElementById('card-wa-display').textContent = `+${appData.formattedPhone}`;
+
+            goToStep(3);
+        }
+
+        // ==========================================
+        // 6. PENGIRIMAN KE WHATSAPP & UTILITAS
+        // ==========================================
+        function buildFullWhatsAppText() {
+            return `Halo *${appData.receiver}*,\n\n${appData.message}\n\nDengan tulus,\n*${appData.sender}* 💌`;
+        }
+
+        function sendToWhatsApp() {
+            const fullText = buildFullWhatsAppText();
+            const encodedText = encodeURIComponent(fullText);
+            const waUrl = `https://wa.me/${appData.formattedPhone}?text=${encodedText}`;
+
+            showToast("Membuka WhatsApp...", "🚀");
+            window.open(waUrl, '_blank', 'noopener,noreferrer');
+        }
+
+        function copyMessageText() {
+            const fullText = buildFullWhatsAppText();
+            
+            // Menggunakan textarea sementara + execCommand agar kompatibel di dalam iframe
+            const tempInput = document.createElement('textarea');
+            tempInput.value = fullText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast("Teks ucapan berhasil disalin!", "✅");
+            } catch (err) {
+                showToast("Gagal menyalin teks.", "❌");
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        function resetApp() {
+            resetGameUI();
+            goToStep(1);
+        }
+
+        // Fungsi Toast Notification yang halus
+        let toastTimeout = null;
+        function showToast(message, icon = "✨") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            document.getElementById('toast-icon').textContent = icon;
+
+            toast.classList.remove('opacity-0', '-translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-4');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
