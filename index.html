@@ -3,691 +3,748 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartu Ucapan & Permintaan Maaf Spesial</title>
+    <title>Jalan Bareng Yuk? ✨</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+    <!-- Google Fonts: Quicksand & Plus Jakarta Sans untuk nuansa manis & modern -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Canvas Confetti untuk efek perayaan -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti untuk perayaan di slide konfirmasi -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Quicksand"', 'sans-serif'],
+                    },
+                    colors: {
+                        pastel: {
+                            pink: '#FFE4E6',
+                            rose: '#FB7185',
+                            peach: '#FFEDD5',
+                            cream: '#FFFBEB',
+                            lavender: '#F3E8FF',
+                            mint: '#DCFCE7',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'wiggle': 'wiggle 0.5s ease-in-out infinite',
+                        'pop': 'pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                        'fade-slide': 'fadeSlide 0.4s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-4deg)' },
+                            '50%': { transform: 'rotate(4deg)' },
+                        },
+                        pop: {
+                            '0%': { opacity: '0', transform: 'scale(0.75)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        fadeSlide: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
+        /* Latar belakang gradasi pastel lembut dengan dekorasi mengambang */
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 40%, #fef3c7 100%);
+            background: linear-gradient(135deg, #FFF1F2 0%, #FFF7ED 50%, #F5F3FF 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
-        .font-serif-elegant {
-            font-family: 'Playfair Display', serif;
-        }
-        /* Animasi lembut mengambang */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        /* Animasi muncul kartu */
-        @keyframes cardReveal {
-            0% { opacity: 0; transform: scale(0.92) translateY(20px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .animate-card-reveal {
-            animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        /* Efek kaca (Glassmorphism) */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 20px 40px -15px rgba(225, 29, 72, 0.12);
-        }
-        /* Area Game */
-        #game-arena {
+
+        /* Gaya kartu tiket berlubang di sisi kiri dan kanan */
+        .ticket-cutout {
             position: relative;
-            touch-action: manipulation;
-            user-select: none;
-            overflow: hidden;
         }
-        .falling-heart {
+        .ticket-cutout::before,
+        .ticket-cutout::after {
+            content: '';
             position: absolute;
-            cursor: pointer;
-            transition: transform 0.1s ease;
-            user-select: none;
-            filter: drop-shadow(0 4px 6px rgba(244, 63, 94, 0.3));
+            width: 24px;
+            height: 24px;
+            background-color: #FFF5F5;
+            border-radius: 9999px;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
-        .falling-heart:active {
-            transform: scale(1.3);
+        .ticket-cutout::before {
+            left: -12px;
+        }
+        .ticket-cutout::after {
+            right: -12px;
+        }
+
+        /* Kustomisasi scrollbar halus */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FDA4AF;
+            border-radius: 9999px;
         }
     </style>
 </head>
-<body class="text-slate-700 flex flex-col items-center justify-center p-4 sm:p-6">
+<body class="flex items-center justify-center p-4 sm:p-6 text-slate-700 selection:bg-rose-200 selection:text-rose-900">
 
-    <!-- Toast Notification (Pengganti alert) -->
-    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-4">
-        <div id="toast-content" class="bg-slate-800 text-white px-5 py-3 rounded-full shadow-lg text-sm font-medium flex items-center gap-2">
-            <span id="toast-icon">✨</span>
-            <span id="toast-message">Pesan notifikasi</span>
-        </div>
+    <!-- Elemen Dekorasi Latar Belakang -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute top-10 left-8 text-3xl opacity-40 animate-float">☁️</div>
+        <div class="absolute top-24 right-12 text-2xl opacity-40 animate-float" style="animation-delay: 1s;">✨</div>
+        <div class="absolute bottom-16 left-12 text-2xl opacity-40 animate-float" style="animation-delay: 1.5s;">🌸</div>
+        <div class="absolute bottom-24 right-10 text-3xl opacity-40 animate-float" style="animation-delay: 0.5s;">💖</div>
     </div>
 
-    <!-- Header / Indikator Langkah -->
-    <header class="w-full max-w-lg mb-6 text-center">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 text-rose-600 text-xs font-semibold shadow-sm mb-3 border border-rose-100">
-            <span>💌</span> Kartu Ucapan & Maaf Interaktif
-        </div>
-        <h1 class="font-serif-elegant text-2xl sm:text-3xl font-bold text-slate-800">
-            Sampaikan Maaf dengan Tulus
-        </h1>
-
-        <!-- Stepper Progress -->
-        <div class="flex items-center justify-center gap-2 mt-4">
-            <div id="step-dot-1" class="h-2.5 w-8 rounded-full bg-rose-500 transition-all duration-300"></div>
-            <div id="step-dot-2" class="h-2.5 w-2.5 rounded-full bg-rose-200 transition-all duration-300"></div>
-            <div id="step-dot-3" class="h-2.5 w-2.5 rounded-full bg-rose-200 transition-all duration-300"></div>
-        </div>
-    </header>
-
-    <!-- MAIN CONTAINER -->
-    <main class="w-full max-w-lg">
-
-        <!-- ========================================== -->
-        <!-- BAGIAN 1: FORM INPUT IDENTITAS & UCAPAN    -->
-        <!-- ========================================== -->
-        <section id="step-1" class="glass-card rounded-3xl p-6 sm:p-8 animate-card-reveal">
-            <div class="mb-5">
-                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-sm">1</span>
-                    Lengkapi Data & Ucapan
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-500 mt-1">Isi tujuan pengiriman dan pilih kata-kata permintaan maaf terbaikmu.</p>
+    <!-- Kontainer Utama Aplikasi -->
+    <main class="relative z-10 w-full max-w-md bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(251,113,133,0.16)] border border-white p-6 sm:p-8 transition-all duration-300">
+        
+        <!-- Indikator Progress Atas (Sembunyikan jika mode tampilan link konfirmasi) -->
+        <div id="progress-container" class="mb-6">
+            <div class="flex justify-between items-center text-xs font-semibold text-rose-400 mb-2">
+                <span id="step-label">Langkah 1 dari 4</span>
+                <span id="step-emoji">💌 Ajakan</span>
             </div>
+            <div class="w-full h-2.5 bg-rose-100 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-rose-400 to-orange-300 rounded-full transition-all duration-500 ease-out" style="width: 25%;"></div>
+            </div>
+        </div>
 
-            <form id="setup-form" class="space-y-4">
-                <!-- Grid Nama Pengirim & Penerima -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label for="sender-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Kamu (Pengirim) *</label>
-                        <input type="text" id="sender-name" required placeholder="Contoh: Budi"
-                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-rose-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition">
-                    </div>
-                    <div>
-                        <label for="receiver-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Tujuan (Penerima) *</label>
-                        <input type="text" id="receiver-name" required placeholder="Contoh: Siti / Sayang"
-                            class="w-full px-4 py-2.5 rounded-xl bg-white border border-rose-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition">
-                    </div>
-                </div>
+        <!-- ==================== SLIDE 1: AJAKAN MAIN ==================== -->
+        <section id="slide-1" class="slide-section animate-fade-slide text-center">
+            <div class="w-24 h-24 mx-auto mb-5 bg-gradient-to-tr from-rose-100 to-orange-100 rounded-full flex items-center justify-center shadow-inner animate-float">
+                <span class="text-5xl">🥺👉👈</span>
+            </div>
+            
+            <span class="inline-block px-3.5 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-bold tracking-wide mb-3">
+                UNDANGAN SPESIAL ✨
+            </span>
+            
+            <h1 class="font-display text-2xl sm:text-3xl font-bold text-slate-800 leading-tight mb-3">
+                Hai! Jalan bareng yuk?
+            </h1>
+            
+            <p class="text-slate-500 text-sm sm:text-base leading-relaxed mb-8">
+                Lagi bosen nih di rumah terus. Keluar sebentar cari angin, jajan, atau seru-seruan bareng aku yuk! Gimana, gas nggak?
+            </p>
 
-                <!-- Nomor WhatsApp Tujuan -->
-                <div>
-                    <label for="wa-number" class="block text-xs font-semibold text-slate-700 mb-1.5">Nomor WhatsApp Tujuan *</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm font-medium">📱</span>
-                        <input type="tel" id="wa-number" required placeholder="Contoh: 081234567890 atau 62812..."
-                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-rose-200/80 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition">
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-1">Otomatis dikonversi ke format internasional WhatsApp (628xxx).</p>
-                </div>
-
-                <!-- Pilihan Template Ucapan -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-2">Pilih Tema Ucapan Maaf</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        <button type="button" onclick="selectTemplate('pasangan')" id="tpl-pasangan"
-                            class="tpl-btn active-tpl px-3 py-2 rounded-xl text-xs font-semibold border border-rose-400 bg-rose-500 text-white transition shadow-sm">
-                            ❤️ Pasangan
-                        </button>
-                        <button type="button" onclick="selectTemplate('sahabat')" id="tpl-sahabat"
-                            class="tpl-btn px-3 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-white text-slate-600 hover:bg-rose-50 transition">
-                            🤝 Sahabat
-                        </button>
-                        <button type="button" onclick="selectTemplate('keluarga')" id="tpl-keluarga"
-                            class="tpl-btn px-3 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-white text-slate-600 hover:bg-rose-50 transition">
-                            🏡 Keluarga
-                        </button>
-                        <button type="button" onclick="selectTemplate('custom')" id="tpl-custom"
-                            class="tpl-btn px-3 py-2 rounded-xl text-xs font-semibold border border-rose-200 bg-white text-slate-600 hover:bg-rose-50 transition">
-                            ✍️ Tulis Sendiri
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Textarea Isi Ucapan -->
-                <div>
-                    <div class="flex justify-between items-center mb-1.5">
-                        <label for="message-text" class="block text-xs font-semibold text-slate-700">Isi Kata-Kata Ucapan Maaf *</label>
-                        <span id="char-count" class="text-[11px] text-slate-400">0 karakter</span>
-                    </div>
-                    <textarea id="message-text" rows="4" required placeholder="Tuliskan isi hati dan permintaan maafmu di sini..."
-                        class="w-full p-3.5 rounded-xl bg-white border border-rose-200/80 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition"></textarea>
-                </div>
-
-                <!-- Tombol Lanjut ke Game -->
-                <button type="submit"
-                    class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm shadow-lg shadow-rose-500/30 transform active:scale-[0.98] transition flex items-center justify-center gap-2">
-                    <span>Mulai & Mainkan Mini Game</span>
-                    <span>🎮</span>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="handleYes()" class="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-base shadow-lg shadow-rose-200 hover:shadow-rose-300 transform hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer">
+                    Mau! 💖
                 </button>
-            </form>
+                <button onclick="showForceModal()" class="py-3.5 px-6 rounded-2xl bg-slate-100 hover:bg-slate-200/80 text-slate-600 font-semibold text-base transform active:scale-95 transition-all cursor-pointer">
+                    Enggak ah 🙅‍♂️
+                </button>
+            </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- BAGIAN 2: MINI GAME SEDERHANA & MENARIK     -->
-        <!-- ========================================== -->
-        <section id="step-2" class="hidden glass-card rounded-3xl p-6 sm:p-8 animate-card-reveal">
-            <div class="text-center mb-4">
-                <span class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold mb-2">
-                    Misi Membuka Kartu ✨
+        <!-- ==================== SLIDE 2: PILIH AKTIVITAS ==================== -->
+        <section id="slide-2" class="slide-section hidden animate-fade-slide">
+            <div class="text-center mb-6">
+                <span class="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-xs font-bold mb-2">
+                    YEAY! ASIK! 🎉
                 </span>
-                <h2 class="text-lg sm:text-xl font-bold text-slate-800">
-                    Kumpulkan <span class="text-rose-500">5 Hati</span> & Jawab Pertanyaan!
+                <h2 class="font-display text-2xl font-bold text-slate-800">
+                    Kita mau ngapain nih?
                 </h2>
-                <p class="text-xs text-slate-500 mt-1">
-                    Ketuk hati yang jatuh untuk mencairkan suasana sebelum membuka surat maaf.
+                <p class="text-slate-500 text-sm mt-1">
+                    Pilih satu kegiatan yang paling kamu pengenin sekarang!
                 </p>
             </div>
 
-            <!-- Bar Skor & Progress -->
-            <div class="flex items-center justify-between bg-white/90 px-4 py-2.5 rounded-2xl border border-rose-100 mb-3">
-                <span class="text-xs font-bold text-slate-600">Hati Terkumpul:</span>
-                <div class="flex items-center gap-1.5" id="heart-progress-icons">
-                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-1">💖</span>
-                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-2">💖</span>
-                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-3">💖</span>
-                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-4">💖</span>
-                    <span class="text-lg opacity-30 transition-all duration-300" id="h-icon-5">💖</span>
-                </div>
-                <span id="score-badge" class="text-xs font-extrabold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">0 / 5</span>
+            <!-- Daftar Kartu Pilihan Aktivitas -->
+            <div class="space-y-3 mb-6" id="activity-list">
+                <button onclick="selectActivity('Nonton Bioskop', '🎬')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-rose-100/80 bg-white hover:border-rose-400 hover:bg-rose-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🎬
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800 group-hover:text-rose-600 transition-colors">Nonton Bioskop</h3>
+                        <p class="text-xs text-slate-400">Nonton film seru sambil ngemil popcorn</p>
+                    </div>
+                    <span class="text-rose-300 group-hover:text-rose-500 group-hover:translate-x-1 transition-all font-bold">→</span>
+                </button>
+
+                <button onclick="selectActivity('Makan Berdua', '🍽️')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-orange-100/80 bg-white hover:border-orange-400 hover:bg-orange-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🍽️
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800 group-hover:text-orange-600 transition-colors">Makan Berdua</h3>
+                        <p class="text-xs text-slate-400">Kulineran enak & ngobrol santai</p>
+                    </div>
+                    <span class="text-orange-300 group-hover:text-orange-500 group-hover:translate-x-1 transition-all font-bold">→</span>
+                </button>
+
+                <button onclick="selectActivity('Jajan-jajan', '🧋')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-amber-100/80 bg-white hover:border-amber-400 hover:bg-amber-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🧋
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800 group-hover:text-amber-600 transition-colors">Jajan-jajan</h3>
+                        <p class="text-xs text-slate-400">Hunting boba, street food, & cemilan lucu</p>
+                    </div>
+                    <span class="text-amber-300 group-hover:text-amber-500 group-hover:translate-x-1 transition-all font-bold">→</span>
+                </button>
+
+                <button onclick="selectActivity('Momotoran', '🛵')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-purple-100/80 bg-white hover:border-purple-400 hover:bg-purple-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🛵
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800 group-hover:text-purple-600 transition-colors">Momotoran</h3>
+                        <p class="text-xs text-slate-400">Keliling kota nikmatin angin sore/malam</p>
+                    </div>
+                    <span class="text-purple-300 group-hover:text-purple-500 group-hover:translate-x-1 transition-all font-bold">→</span>
+                </button>
+
+                <button onclick="selectActivity('Sepor / Olahraga', '🏸')" class="activity-card w-full flex items-center gap-4 p-3.5 rounded-2xl border-2 border-emerald-100/80 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 transition-all duration-200 group text-left shadow-sm hover:shadow-md cursor-pointer">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🏸
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">Sepor / Olahraga</h3>
+                        <p class="text-xs text-slate-400">Jogging santai, badminton, atau jalan sehat</p>
+                    </div>
+                    <span class="text-emerald-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all font-bold">→</span>
+                </button>
             </div>
 
-            <!-- Arena Mini Game Tangkap Hati -->
-            <div id="game-arena" class="w-full h-64 sm:h-72 rounded-2xl bg-gradient-to-b from-rose-50/90 to-amber-50/90 border-2 border-dashed border-rose-200 relative flex flex-col items-center justify-center">
-                <!-- Pesan Panduan Awal di dalam Arena -->
-                <div id="game-start-overlay" class="text-center p-4 z-10">
-                    <div class="text-4xl mb-2 animate-float">💝</div>
-                    <p class="text-xs sm:text-sm font-medium text-slate-600 mb-3">Tangkap 5 hati yang berjatuhan!</p>
-                    <button type="button" onclick="startHeartGame()"
-                        class="px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-md transition transform active:scale-95">
-                        Mulai Tangkap Hati
+            <button onclick="goToSlide(1)" class="w-full py-2.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
+                ← Kembali ke ajakan awal
+            </button>
+        </section>
+
+        <!-- ==================== SLIDE 3: PENENTUAN WAKTU ==================== -->
+        <section id="slide-3" class="slide-section hidden animate-fade-slide">
+            <div class="text-center mb-6">
+                <div id="selected-activity-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-bold mb-2">
+                    <span>🎬</span> <span>Nonton Bioskop</span>
+                </div>
+                <h2 class="font-display text-2xl font-bold text-slate-800">
+                    Kapan nih kita gas? 🗓️
+                </h2>
+                <p class="text-slate-500 text-sm mt-1">
+                    Atur hari dan jam yang paling pas buat kamu
+                </p>
+            </div>
+
+            <!-- Pilihan Cepat Hari -->
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-600 mb-2">Pilih Hari / Tanggal:</label>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <button type="button" onclick="setQuickDate(0)" class="quick-date-btn py-2 px-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-bold transition-all cursor-pointer">
+                        Hari Ini
+                    </button>
+                    <button type="button" onclick="setQuickDate(1)" class="quick-date-btn py-2 px-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-bold transition-all cursor-pointer">
+                        Besok
+                    </button>
+                    <button type="button" onclick="setNextWeekend()" class="quick-date-btn py-2 px-2 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-bold transition-all cursor-pointer">
+                        Weekend Ini
                     </button>
                 </div>
-
-                <!-- Tahap Interaktif Lucu Setelah 5 Hati Terkumpul (Tombol Menghindar) -->
-                <div id="forgive-challenge-overlay" class="hidden text-center p-4 z-20 w-full h-full flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
-                    <div class="text-3xl mb-1">🥺👉👈</div>
-                    <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-1">
-                        Hati sudah terkumpul!
-                    </h3>
-                    <p class="text-xs text-slate-600 mb-4 max-w-xs">
-                        Pertanyaan terakhir sebelum surat terbuka: <br><strong>Sudah siap memaafkan?</strong>
-                    </p>
-                    <div class="relative w-full h-24 flex items-center justify-center gap-4" id="dodge-container">
-                        <button type="button" onclick="completeGame()"
-                            class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 z-10">
-                            Iya, Dimaafkan 💖
-                        </button>
-                        <button type="button" id="runaway-btn"
-                            class="px-4 py-2.5 rounded-xl bg-slate-200 text-slate-600 text-xs font-semibold transition-all duration-150">
-                            Belum Maaf 😤
-                        </button>
-                    </div>
-                </div>
+                <input type="date" id="date-input" class="w-full p-3.5 rounded-2xl border-2 border-rose-100 focus:border-rose-400 focus:outline-none bg-white text-slate-700 font-semibold text-sm transition-colors">
             </div>
 
-            <!-- Navigasi Bawah Game -->
-            <div class="mt-4 flex justify-between items-center">
-                <button type="button" onclick="goToStep(1)" class="text-xs font-semibold text-slate-500 hover:text-rose-600 transition">
-                    ← Edit Ucapan
+            <!-- Pilihan Cepat Jam -->
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-600 mb-2">Jam Berapa?</label>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <button type="button" onclick="setQuickTime('15:30')" class="py-2 px-2 rounded-xl border border-orange-200 bg-orange-50/60 hover:bg-orange-100 text-orange-600 text-xs font-bold transition-all cursor-pointer">
+                        15:30 Sore
+                    </button>
+                    <button type="button" onclick="setQuickTime('19:00')" class="py-2 px-2 rounded-xl border border-orange-200 bg-orange-50/60 hover:bg-orange-100 text-orange-600 text-xs font-bold transition-all cursor-pointer">
+                        19:00 Malam
+                    </button>
+                    <button type="button" onclick="setQuickTime('20:00')" class="py-2 px-2 rounded-xl border border-orange-200 bg-orange-50/60 hover:bg-orange-100 text-orange-600 text-xs font-bold transition-all cursor-pointer">
+                        20:00 Santai
+                    </button>
+                </div>
+                <input type="time" id="time-input" class="w-full p-3.5 rounded-2xl border-2 border-rose-100 focus:border-rose-400 focus:outline-none bg-white text-slate-700 font-semibold text-sm transition-colors">
+            </div>
+
+            <!-- Pesan Error Validasi -->
+            <p id="time-error" class="hidden text-center text-xs font-bold text-rose-500 mb-3 animate-bounce">
+                ⚠️ Isi tanggal dan jamnya dulu ya biar jelas!
+            </p>
+
+            <!-- Tombol Aksi -->
+            <div class="flex flex-col gap-2">
+                <button onclick="confirmSchedule()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-orange-400 hover:from-rose-600 hover:to-orange-500 text-white font-bold text-base shadow-lg shadow-rose-200 transform hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer">
+                    Lanjut Konfirmasi ✨
                 </button>
-                <button type="button" onclick="completeGame()" class="text-[11px] text-slate-400 hover:text-slate-600 underline">
-                    Lewati Game
+                <button onclick="goToSlide(2)" class="w-full py-2.5 text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
+                    ← Ganti pilihan aktivitas
                 </button>
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- BAGIAN 3: KARTU UCAPAN & KIRIM WHATSAPP    -->
-        <!-- ========================================== -->
-        <section id="step-3" class="hidden animate-card-reveal">
-            <!-- Kartu Digital Estetik -->
-            <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden border-2 border-rose-200/80">
-                <!-- Dekorasi Sudut -->
-                <div class="absolute -top-6 -right-6 w-24 h-24 bg-rose-200/40 rounded-full blur-xl pointer-events-none"></div>
-                <div class="absolute -bottom-6 -left-6 w-28 h-28 bg-amber-200/40 rounded-full blur-xl pointer-events-none"></div>
-
-                <!-- Header Kartu -->
-                <div class="text-center border-b border-rose-100 pb-4 mb-5">
-                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-100 text-2xl mb-2 animate-float">
-                        💌
-                    </div>
-                    <p class="text-xs uppercase tracking-widest text-rose-500 font-bold">Surat Permintaan Maaf</p>
-                    <h2 class="font-serif-elegant text-xl sm:text-2xl font-bold text-slate-800 mt-1">
-                        Untuk <span id="card-receiver" class="text-rose-600">Penerima</span>
-                    </h2>
+        <!-- ==================== SLIDE 4: KONFIRMASI & SHARE ==================== -->
+        <section id="slide-4" class="slide-section hidden animate-fade-slide">
+            <div class="text-center mb-5">
+                <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold mb-2">
+                    <span>✅</span> <span>DEAL! JADI BERANGKAT!</span>
                 </div>
+                <h2 class="font-display text-2xl font-bold text-slate-800">
+                    Tiket Jalan Bareng 🎟️
+                </h2>
+                <p class="text-slate-500 text-xs mt-1">
+                    Simpan tiket ini dan kirim ke WhatsApp biar nggak lupa!
+                </p>
+            </div>
 
-                <!-- Isi Pesan Maaf -->
-                <div class="bg-white/75 rounded-2xl p-5 border border-rose-100/80 shadow-inner mb-5">
-                    <p id="card-message" class="text-sm sm:text-base text-slate-700 leading-relaxed whitespace-pre-line italic">
-                        Isi ucapan maaf akan muncul di sini...
-                    </p>
-                </div>
-
-                <!-- Tanda Tangan Pengirim -->
-                <div class="flex items-center justify-between text-xs sm:text-sm mb-6 px-1">
+            <!-- Kartu Tiket Ringkasan -->
+            <div class="bg-gradient-to-br from-rose-50 via-white to-orange-50 border-2 border-rose-200/80 rounded-3xl p-5 mb-5 shadow-sm relative overflow-hidden">
+                <!-- Header Tiket -->
+                <div class="flex items-center justify-between border-b-2 border-dashed border-rose-200 pb-4 mb-4 ticket-cutout">
                     <div>
-                        <span class="text-slate-400 block text-[11px]">Tujuan WhatsApp:</span>
-                        <span id="card-wa-display" class="font-semibold text-slate-600">+628xxx</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-rose-400 block">Status Ajakan</span>
+                        <span class="text-sm font-extrabold text-emerald-600 flex items-center gap-1">
+                            Pasti Mau! 💖
+                        </span>
                     </div>
-                    <div class="text-right">
-                        <span class="text-slate-400 block text-[11px]">Dengan tulus,</span>
-                        <span id="card-sender" class="font-serif-elegant font-bold text-base text-slate-800">Pengirim</span>
+                    <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-rose-100 flex items-center justify-center text-2xl" id="conf-icon">
+                        🎬
                     </div>
                 </div>
 
-                <!-- Tombol Aksi Utama: Kirim ke WhatsApp -->
-                <div class="space-y-3">
-                    <button type="button" onclick="sendToWhatsApp()"
-                        class="w-full py-3.5 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-sm shadow-lg shadow-emerald-500/30 transform active:scale-[0.98] transition flex items-center justify-center gap-2.5">
-                        <!-- Ikon SVG WhatsApp -->
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
-                        </svg>
-                        <span>Kirim ke WhatsApp Sekarang</span>
-                    </button>
-
-                    <!-- Tombol Sekunder: Salin & Buat Ulang -->
-                    <div class="grid grid-cols-2 gap-3">
-                        <button type="button" onclick="copyMessageText()"
-                            class="py-2.5 px-4 rounded-xl bg-white hover:bg-rose-50 text-slate-700 border border-rose-200 font-semibold text-xs transition flex items-center justify-center gap-1.5">
-                            <span>📋</span> Salin Teks
-                        </button>
-                        <button type="button" onclick="resetApp()"
-                            class="py-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 font-semibold text-xs transition flex items-center justify-center gap-1.5">
-                            <span>🔄</span> Buat Ulang
-                        </button>
+                <!-- Detail Tiket -->
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-medium">Aktivitas</span>
+                        <span class="font-bold text-slate-800 text-right" id="conf-activity">Nonton Bioskop</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-medium">Hari & Tanggal</span>
+                        <span class="font-bold text-slate-800 text-right" id="conf-date">Sabtu, 14 November 2026</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400 font-medium">Waktu / Jam</span>
+                        <span class="font-bold text-rose-600 bg-rose-100/70 px-2.5 py-0.5 rounded-lg" id="conf-time">19:00 WIB</span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Input Opsional Nomor WA -->
+            <div class="mb-3">
+                <label for="wa-number" class="block text-[11px] font-semibold text-slate-500 mb-1">
+                    Nomor WhatsApp Tujuan (Opsional - kosongkan untuk pilih kontak di WA):
+                </label>
+                <div class="relative">
+                    <input type="tel" id="wa-number" placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-400 focus:outline-none text-xs bg-white text-slate-700">
+                </div>
+            </div>
+
+            <!-- Tombol Bagikan & Salin -->
+            <div class="space-y-2.5 mb-4">
+                <button onclick="shareToWhatsApp()" class="w-full py-3.5 px-5 rounded-2xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-sm shadow-lg shadow-emerald-200/70 flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:scale-95 transition-all cursor-pointer">
+                    <span class="text-lg">💬</span>
+                    <span>Kirim Link ke WhatsApp</span>
+                </button>
+
+                <button onclick="copyConfirmationLink()" class="w-full py-3 px-5 rounded-2xl bg-rose-100 hover:bg-rose-200/80 text-rose-700 font-bold text-sm flex items-center justify-center gap-2 transform active:scale-95 transition-all cursor-pointer">
+                    <span>📋</span>
+                    <span>Salin Link Halaman Konfirmasi</span>
+                </button>
+            </div>
+
+            <!-- Tombol Ulangi / Buat Rencana Baru -->
+            <div class="text-center pt-2 border-t border-slate-100">
+                <button onclick="resetApp()" class="text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer">
+                    🔄 Buat Rencana Baru / Ubah Pilihan
+                </button>
             </div>
         </section>
 
     </main>
 
-    <!-- Footer Kecil -->
-    <footer class="mt-8 text-center text-[11px] text-slate-400">
-        Dibuat dengan sepenuh hati untuk menyambung kembali silaturahmi & kasih sayang ✨
-    </footer>
+    <!-- ==================== MODAL PERINGATAN LUCU (SLIDE 1) ==================== -->
+    <div id="force-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-2 border-rose-200 animate-pop">
+            <div class="w-20 h-20 mx-auto mb-4 bg-rose-100 rounded-full flex items-center justify-center text-4xl animate-wiggle">
+                😤🚫
+            </div>
+            <h3 class="font-display text-xl font-bold text-slate-800 mb-2" id="modal-title">
+                Eits, Gak Bisa! 😝
+            </h3>
+            <p class="text-slate-600 text-sm leading-relaxed mb-6" id="modal-message">
+                Tombol <span class="font-bold text-rose-500">"Enggak ah"</span> lagi rusak dan sedang dalam perbaikan! Kamu <span class="font-bold underline decoration-rose-400">HARUS MAU</span> pokoknya! 🥺👉👈
+            </p>
+            <button onclick="acceptForcedYes()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm shadow-lg shadow-rose-200 transform hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
+                Oke deh, aku mau! 😆💖
+            </button>
+        </div>
+    </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- ==================== NOTIFIKASI TOAST ==================== -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-2 bg-slate-800 text-white px-5 py-3 rounded-full shadow-xl text-xs font-semibold transition-all">
+        <span>✨</span>
+        <span id="toast-message">Link konfirmasi berhasil disalin!</span>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIKA INTERAKTIF ==================== -->
     <script>
-        // ==========================================
-        // 1. STATE & DATA TEMPLATE UCAPAN
-        // ==========================================
-        const templates = {
-            pasangan: "Hai sayang, aku minta maaf ya atas sikap dan kata-kataku yang bikin kamu kecewa. Aku sama sekali nggak bermaksud nyakitin perasaanmu. Kamu sangat berarti buat aku, maafin aku ya? ❤️",
-            sahabat: "Halo sobat, maafin aku ya kalau akhir-akhir ini aku ada salah kata atau sikap yang kurang berkenan di hati kamu. Persahabatan kita jauh lebih berharga dari ego masing-masing. Maaf ya! 🤝",
-            keluarga: "Assalamualaikum / Halo, dengan segala kerendahan hati aku memohon maaf atas segala khilaf, ucapan, maupun sikapku yang kurang berkenan. Semoga kita selalu diberikan keharmonisan dan kebahagiaan. 🏡",
-            custom: ""
+        // State aplikasi
+        const appState = {
+            currentSlide: 1,
+            activity: '',
+            icon: '',
+            date: '',
+            time: '',
+            noClickCount: 0
         };
 
-        let appData = {
-            sender: "",
-            receiver: "",
-            rawPhone: "",
-            formattedPhone: "",
-            message: ""
-        };
+        // Pesan lucu bervariasi jika tombol "Enggak" ditekan
+        const funnyForceMessages = [
+            {
+                title: "Eits, Gak Bisa! 😝",
+                msg: 'Tombol <span class="font-bold text-rose-500">"Enggak ah"</span> lagi rusak! Sistem mendeteksi kamu <span class="font-bold underline decoration-rose-400">HARUS MAU</span> jalan bareng aku! 🥺👉👈',
+                btn: "Oke deh, aku mau! 😆💖"
+            },
+            {
+                title: "Waduh, Error 404! 🙈",
+                msg: 'Pilihan menolak tidak ditemukan di hati ini. Pokoknya wajib klik tombol mau di bawah ini ya! ✨',
+                btn: "Iya iya, aku mauuu! 🥰"
+            }
+        ];
 
-        let gameScore = 0;
-        const targetScore = 5;
-        let heartInterval = null;
-        let isGameRunning = false;
-
-        // ==========================================
-        // 2. INISIALISASI HALAMAN
-        // ==========================================
-        const messageInput = document.getElementById('message-text');
-        const charCount = document.getElementById('char-count');
-
-        // Set template default saat halaman dimuat
+        // Inisialisasi saat halaman dimuat
         window.addEventListener('DOMContentLoaded', () => {
-            selectTemplate('pasangan');
-            setupRunawayButton();
+            setupDefaultDateTime();
+            checkSharedUrlParams();
         });
 
-        // Update penghitung karakter saat mengetik
-        messageInput.addEventListener('input', () => {
-            charCount.textContent = `${messageInput.value.length} karakter`;
-        });
+        // Set default tanggal (besok) & jam (19:00) agar user lebih cepat memilih
+        function setupDefaultDateTime() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const yyyy = tomorrow.getFullYear();
+            const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            const dd = String(tomorrow.getDate()).padStart(2, '0');
+            
+            const dateInput = document.getElementById('date-input');
+            const timeInput = document.getElementById('time-input');
+            
+            dateInput.min = new Date().toISOString().split('T')[0];
+            dateInput.value = `${yyyy}-${mm}-${dd}`;
+            timeInput.value = '19:00';
+        }
 
-        // Fungsi memilih template ucapan
-        function selectTemplate(type) {
-            // Reset style semua tombol template
-            document.querySelectorAll('.tpl-btn').forEach(btn => {
-                btn.classList.remove('bg-rose-500', 'text-white', 'border-rose-400', 'shadow-sm');
-                btn.classList.add('bg-white', 'text-slate-600', 'border-rose-200');
+        // Cek apakah halaman dibuka dari link konfirmasi yang dibagikan (?confirmed=1...)
+        function checkSharedUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('confirmed') === '1') {
+                const act = params.get('act') || 'Jalan Bareng';
+                const icon = params.get('icon') || '💖';
+                const date = params.get('date') || '';
+                const time = params.get('time') || '19:00';
+
+                appState.activity = act;
+                appState.icon = icon;
+                appState.date = date;
+                appState.time = time;
+
+                renderConfirmationTicket();
+                goToSlide(4, false);
+            }
+        }
+
+        // Navigasi antar slide dengan animasi & update progress bar
+        function goToSlide(slideNumber, triggerConfetti = false) {
+            appState.currentSlide = slideNumber;
+
+            // Sembunyikan semua slide
+            document.querySelectorAll('.slide-section').forEach(sec => {
+                sec.classList.add('hidden');
             });
 
-            // Aktifkan tombol yang dipilih
-            const activeBtn = document.getElementById(`tpl-${type}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-white', 'text-slate-600', 'border-rose-200');
-                activeBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-400', 'shadow-sm');
+            // Tampilkan slide tujuan
+            const targetSlide = document.getElementById(`slide-${slideNumber}`);
+            if (targetSlide) {
+                targetSlide.classList.remove('hidden');
             }
 
-            // Isi textarea sesuai template
-            if (type !== 'custom') {
-                messageInput.value = templates[type];
-            } else {
-                messageInput.value = "";
-                messageInput.focus();
-            }
-            charCount.textContent = `${messageInput.value.length} karakter`;
-        }
+            // Update Progress Bar
+            const progressBar = document.getElementById('progress-bar');
+            const stepLabel = document.getElementById('step-label');
+            const stepEmoji = document.getElementById('step-emoji');
 
-        // ==========================================
-        // 3. VALIDASI FORM & KONVERSI NOMOR WA
-        // ==========================================
-        function formatWhatsAppNumber(input) {
-            // Hapus semua karakter selain angka
-            let cleaned = input.replace(/\D/g, '');
-            
-            // Jika diawali '0', ganti dengan '62'
-            if (cleaned.startsWith('0')) {
-                cleaned = '62' + cleaned.substring(1);
-            } 
-            // Jika diawali '8' (tanpa 0 atau 62), tambahkan '62'
-            else if (cleaned.startsWith('8')) {
-                cleaned = '62' + cleaned;
-            }
-            return cleaned;
-        }
-
-        document.getElementById('setup-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const sender = document.getElementById('sender-name').value.trim();
-            const receiver = document.getElementById('receiver-name').value.trim();
-            const rawPhone = document.getElementById('wa-number').value.trim();
-            const message = messageInput.value.trim();
-
-            const formattedPhone = formatWhatsAppNumber(rawPhone);
-
-            // Validasi panjang nomor WA minimal (misal 628xxxxxxxx -> min 10 digit)
-            if (formattedPhone.length < 10) {
-                showToast("Nomor WhatsApp tidak valid. Contoh: 08123456789", "⚠️");
-                document.getElementById('wa-number').focus();
-                return;
-            }
-
-            if (!message) {
-                showToast("Tuliskan kata-kata ucapan maaf terlebih dahulu.", "✍️");
-                messageInput.focus();
-                return;
-            }
-
-            // Simpan data ke state
-            appData = {
-                sender,
-                receiver,
-                rawPhone,
-                formattedPhone,
-                message
+            const stepMeta = {
+                1: { width: '25%', label: 'Langkah 1 dari 4', emoji: '💌 Ajakan' },
+                2: { width: '50%', label: 'Langkah 2 dari 4', emoji: '🎯 Pilih Aktivitas' },
+                3: { width: '75%', label: 'Langkah 3 dari 4', emoji: '⏰ Atur Waktu' },
+                4: { width: '100%', label: 'Selesai! 🎉', emoji: '🎟️ Tiket Kita' }
             };
 
-            // Reset game & pindah ke Langkah 2
-            resetGameUI();
-            goToStep(2);
-        });
+            const meta = stepMeta[slideNumber];
+            progressBar.style.width = meta.width;
+            stepLabel.textContent = meta.label;
+            stepEmoji.textContent = meta.emoji;
 
-        // ==========================================
-        // 4. NAVIGASI ANTAR LANGKAH (STEPPER)
-        // ==========================================
-        function goToStep(stepNumber) {
-            // Sembunyikan semua section
-            document.getElementById('step-1').classList.add('hidden');
-            document.getElementById('step-2').classList.add('hidden');
-            document.getElementById('step-3').classList.add('hidden');
-
-            // Tampilkan section tujuan
-            document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
-
-            // Update indikator titik di header
-            for (let i = 1; i <= 3; i++) {
-                const dot = document.getElementById(`step-dot-${i}`);
-                if (i === stepNumber) {
-                    dot.classList.remove('w-2.5', 'bg-rose-200');
-                    dot.classList.add('w-8', 'bg-rose-500');
-                } else if (i < stepNumber) {
-                    dot.classList.remove('w-8', 'bg-rose-200');
-                    dot.classList.add('w-2.5', 'bg-rose-400');
-                } else {
-                    dot.classList.remove('w-8', 'bg-rose-500', 'bg-rose-400');
-                    dot.classList.add('w-2.5', 'bg-rose-200');
-                }
-            }
-
-            // Hentikan interval game jika keluar dari step 2
-            if (stepNumber !== 2 && heartInterval) {
-                clearInterval(heartInterval);
-                isGameRunning = false;
-            }
-        }
-
-        // ==========================================
-        // 5. LOGIKA MINI GAME (TANGKAP HATI & TOMBOL MENGHINDAR)
-        // ==========================================
-        function resetGameUI() {
-            gameScore = 0;
-            isGameRunning = false;
-            if (heartInterval) clearInterval(heartInterval);
-
-            document.getElementById('score-badge').textContent = `0 / ${targetScore}`;
-            for (let i = 1; i <= targetScore; i++) {
-                document.getElementById(`h-icon-${i}`).classList.add('opacity-30');
-                document.getElementById(`h-icon-${i}`).classList.remove('scale-125');
-            }
-
-            // Bersihkan hati yang tersisa di arena
-            document.querySelectorAll('.falling-heart').forEach(el => el.remove());
-
-            document.getElementById('game-start-overlay').classList.remove('hidden');
-            document.getElementById('forgive-challenge-overlay').classList.add('hidden');
-        }
-
-        function startHeartGame() {
-            if (isGameRunning) return;
-            isGameRunning = true;
-            document.getElementById('game-start-overlay').classList.add('hidden');
-
-            // Munculkan hati pertama langsung
-            spawnFallingHeart();
-
-            // Munculkan hati setiap 650ms
-            heartInterval = setInterval(() => {
-                if (gameScore < targetScore) {
-                    spawnFallingHeart();
-                } else {
-                    clearInterval(heartInterval);
-                }
-            }, 650);
-        }
-
-        function spawnFallingHeart() {
-            const arena = document.getElementById('game-arena');
-            if (!arena || !isGameRunning) return;
-
-            const heart = document.createElement('div');
-            const emojis = ['💖', '💝', '💗', '💓', '🌸'];
-            heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            heart.className = 'falling-heart text-3xl sm:text-4xl p-2';
-
-            // Posisi horizontal acak (dengan padding agar tidak terpotong)
-            const arenaWidth = arena.clientWidth;
-            const randomX = Math.max(15, Math.floor(Math.random() * (arenaWidth - 60)));
-            heart.style.left = `${randomX}px`;
-            heart.style.top = '-45px';
-
-            arena.appendChild(heart);
-
-            // Animasi jatuh menggunakan requestAnimationFrame
-            let posY = -45;
-            const speed = 2.2 + Math.random() * 1.8; // Kecepatan ramah pengguna
-            const arenaHeight = arena.clientHeight;
-
-            function fall() {
-                if (!heart.parentNode || !isGameRunning) return;
-                posY += speed;
-                heart.style.top = `${posY}px`;
-
-                if (posY < arenaHeight + 20) {
-                    requestAnimationFrame(fall);
-                } else {
-                    heart.remove();
-                }
-            }
-            requestAnimationFrame(fall);
-
-            // Event saat hati diklik / disentuh
-            const catchHandler = (e) => {
-                e.preventDefault();
-                if (!heart.parentNode) return;
-                heart.remove();
-                incrementScore();
-            };
-
-            heart.addEventListener('pointerdown', catchHandler);
-        }
-
-        function incrementScore() {
-            if (gameScore >= targetScore) return;
-            gameScore++;
-
-            // Update UI skor & ikon hati
-            document.getElementById('score-badge').textContent = `${gameScore} / ${targetScore}`;
-            const icon = document.getElementById(`h-icon-${gameScore}`);
-            if (icon) {
-                icon.classList.remove('opacity-30');
-                icon.classList.add('scale-125');
-                setTimeout(() => icon.classList.remove('scale-125'), 200);
-            }
-
-            // Jika mencapai 5 hati, munculkan tantangan tombol menghindar
-            if (gameScore >= targetScore) {
-                isGameRunning = false;
-                clearInterval(heartInterval);
-                document.querySelectorAll('.falling-heart').forEach(el => el.remove());
-
-                setTimeout(() => {
-                    document.getElementById('forgive-challenge-overlay').classList.remove('hidden');
-                }, 300);
-            }
-        }
-
-        // Logika Tombol "Belum Maaf" yang menghindar lucu saat didekati/diklik
-        function setupRunawayButton() {
-            const btn = document.getElementById('runaway-btn');
-            const container = document.getElementById('dodge-container');
-
-            const moveButton = (e) => {
-                if (e) e.preventDefault();
-                const containerRect = container.getBoundingClientRect();
-                const btnRect = btn.getBoundingClientRect();
-
-                const maxX = Math.max(10, containerRect.width - btnRect.width - 10);
-                const maxY = Math.max(10, containerRect.height - btnRect.height - 10);
-
-                const randomX = Math.floor(Math.random() * maxX);
-                const randomY = Math.floor(Math.random() * maxY);
-
-                btn.style.position = 'absolute';
-                btn.style.left = `${randomX}px`;
-                btn.style.top = `${randomY}px`;
-            };
-
-            btn.addEventListener('mouseover', moveButton);
-            btn.addEventListener('pointerdown', moveButton);
-        }
-
-        // Menyelesaikan game & membuka Kartu Ucapan (Langkah 3)
-        function completeGame() {
-            // Efek Konfeti Meriah
-            if (typeof confetti === 'function') {
+            // Efek confetti saat masuk halaman konfirmasi
+            if (slideNumber === 4 && triggerConfetti && typeof confetti === 'function') {
                 confetti({
                     particleCount: 70,
                     spread: 65,
                     origin: { y: 0.6 },
-                    colors: ['#f43f5e', '#fb7185', '#fbbf24', '#34d399']
+                    colors: ['#FB7185', '#FDBA74', '#F472B6', '#34D399']
                 });
             }
-
-            // Isi data ke Kartu Ucapan di Langkah 3
-            document.getElementById('card-receiver').textContent = appData.receiver;
-            document.getElementById('card-sender').textContent = appData.sender;
-            document.getElementById('card-message').textContent = `"${appData.message}"`;
-            document.getElementById('card-wa-display').textContent = `+${appData.formattedPhone}`;
-
-            goToStep(3);
         }
 
-        // ==========================================
-        // 6. PENGIRIMAN KE WHATSAPP & UTILITAS
-        // ==========================================
-        function buildFullWhatsAppText() {
-            return `Halo *${appData.receiver}*,\n\n${appData.message}\n\nDengan tulus,\n*${appData.sender}* 💌`;
+        // Slide 1: Klik "Mau!"
+        function handleYes() {
+            goToSlide(2);
         }
 
-        function sendToWhatsApp() {
-            const fullText = buildFullWhatsAppText();
-            const encodedText = encodeURIComponent(fullText);
-            const waUrl = `https://wa.me/${appData.formattedPhone}?text=${encodedText}`;
+        // Slide 1: Klik "Enggak ah" -> Munculkan Modal Peringatan Lucu
+        function showForceModal() {
+            const modal = document.getElementById('force-modal');
+            const content = funnyForceMessages[appState.noClickCount % funnyForceMessages.length];
+            appState.noClickCount++;
 
-            showToast("Membuka WhatsApp...", "🚀");
+            document.getElementById('modal-title').textContent = content.title;
+            document.getElementById('modal-message').innerHTML = content.msg;
+            modal.querySelector('button').textContent = content.btn;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Tutup modal lucu dan lanjut ke Slide 2
+        function acceptForcedYes() {
+            const modal = document.getElementById('force-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            goToSlide(2);
+        }
+
+        // Slide 2: Pilih Aktivitas
+        function selectActivity(activityName, iconEmoji) {
+            appState.activity = activityName;
+            appState.icon = iconEmoji;
+
+            // Update badge di Slide 3
+            const badge = document.getElementById('selected-activity-badge');
+            badge.innerHTML = `<span>${iconEmoji}</span> <span>${activityName}</span>`;
+
+            goToSlide(3);
+        }
+
+        // Slide 3: Tombol cepat pilih tanggal (Hari ini / Besok)
+        function setQuickDate(daysOffset) {
+            const target = new Date();
+            target.setDate(target.getDate() + daysOffset);
+            const yyyy = target.getFullYear();
+            const mm = String(target.getMonth() + 1).padStart(2, '0');
+            const dd = String(target.getDate()).padStart(2, '0');
+            document.getElementById('date-input').value = `${yyyy}-${mm}-${dd}`;
+        }
+
+        // Slide 3: Tombol cepat Weekend Ini (Sabtu terdekat)
+        function setNextWeekend() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 = Minggu, 6 = Sabtu
+            const daysUntilSaturday = dayOfWeek === 6 ? 7 : (6 - dayOfWeek);
+            setQuickDate(daysUntilSaturday);
+        }
+
+        // Slide 3: Tombol cepat pilih jam
+        function setQuickTime(timeStr) {
+            document.getElementById('time-input').value = timeStr;
+        }
+
+        // Slide 3 -> Slide 4: Validasi tanggal & jam lalu tampilkan konfirmasi
+        function confirmSchedule() {
+            const dateVal = document.getElementById('date-input').value;
+            const timeVal = document.getElementById('time-input').value;
+            const errorEl = document.getElementById('time-error');
+
+            if (!dateVal || !timeVal) {
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            errorEl.classList.add('hidden');
+            appState.date = dateVal;
+            appState.time = timeVal;
+
+            // Simpan state ke URL browser dengan try-catch agar tidak error di iframe/srcdoc
+            try {
+                if (window.location.protocol.startsWith('http') && window.location.origin !== 'null') {
+                    const shareUrl = generateShareableUrl();
+                    window.history.replaceState({}, '', shareUrl);
+                }
+            } catch (err) {
+                console.warn('History replaceState dilewati pada mode preview:', err);
+            }
+
+            renderConfirmationTicket();
+            goToSlide(4, true);
+        }
+
+        // Format tanggal ke Bahasa Indonesia yang cantik (misal: Sabtu, 14 November 2026)
+        function formatIndonesianDate(dateString) {
+            if (!dateString) return '-';
+            const parts = dateString.split('-').map(Number);
+            if (parts.length !== 3 || parts.some(isNaN)) return dateString;
+            
+            const [year, month, day] = parts;
+            const dateObj = new Date(year, month - 1, day);
+            
+            const options = {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            };
+            return dateObj.toLocaleDateString('id-ID', options);
+        }
+
+        // Render data ke tiket di Slide 4
+        function renderConfirmationTicket() {
+            document.getElementById('conf-icon').textContent = appState.icon || '💖';
+            document.getElementById('conf-activity').textContent = appState.activity || 'Jalan Bareng';
+            document.getElementById('conf-date').textContent = formatIndonesianDate(appState.date);
+            document.getElementById('conf-time').textContent = `${appState.time || '19:00'} WIB`;
+        }
+
+        // Membuat URL lengkap dengan parameter query konfirmasi secara aman di semua environment
+        function generateShareableUrl() {
+            const params = new URLSearchParams();
+            params.set('confirmed', '1');
+            params.set('act', appState.activity || 'Jalan Bareng');
+            params.set('icon', appState.icon || '💖');
+            params.set('date', appState.date || '');
+            params.set('time', appState.time || '19:00');
+
+            try {
+                // Gunakan origin + pathname jika valid HTTP/HTTPS
+                if (window.location.protocol.startsWith('http') && window.location.origin && window.location.origin !== 'null') {
+                    const url = new URL(window.location.origin + window.location.pathname);
+                    url.search = params.toString();
+                    return url.toString();
+                }
+            } catch (e) {
+                // Abaikan jika URL constructor gagal pada srcdoc/file
+            }
+
+            // Fallback aman jika dibuka dari file lokal atau iframe sandbox
+            const baseHref = window.location.href.split('?')[0];
+            if (baseHref && !baseHref.startsWith('about:')) {
+                return `${baseHref}?${params.toString()}`;
+            }
+            return `?${params.toString()}`;
+        }
+
+        // Format teks pesan konfirmasi untuk WA & Clipboard
+        function buildShareMessage() {
+            const formattedDate = formatIndonesianDate(appState.date);
+            const link = generateShareableUrl();
+            const isValidFullLink = link.startsWith('http');
+
+            let message = `Hai! Aku *MAU* diajak jalan bareng! 💖✨\n\n` +
+                          `🎟️ *Tiket Rencana Kita:*\n` +
+                          `• Aktivitas: ${appState.icon} *${appState.activity}*\n` +
+                          `• Hari/Tanggal: 📅 *${formattedDate}*\n` +
+                          `• Jam: ⏰ *${appState.time} WIB*`;
+
+            if (isValidFullLink) {
+                message += `\n\nLihat tiket konfirmasinya di sini ya:\n${link}`;
+            }
+
+            return message;
+        }
+
+        // Kirim langsung ke WhatsApp
+        function shareToWhatsApp() {
+            const message = buildShareMessage();
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Cek apakah user mengisi nomor WA tujuan
+            const waInput = document.getElementById('wa-number');
+            let rawPhone = waInput ? waInput.value.replace(/\D/g, '') : '';
+            if (rawPhone.startsWith('0')) {
+                rawPhone = '62' + rawPhone.slice(1);
+            }
+
+            const waUrl = rawPhone 
+                ? `https://wa.me/${rawPhone}?text=${encodedMessage}`
+                : `https://wa.me/?text=${encodedMessage}`;
+
             window.open(waUrl, '_blank', 'noopener,noreferrer');
         }
 
-        function copyMessageText() {
-            const fullText = buildFullWhatsAppText();
+        // Salin link & detail konfirmasi ke clipboard dengan fallback iframe-safe
+        function copyConfirmationLink() {
+            const shareText = buildShareMessage();
             
-            // Menggunakan textarea sementara + execCommand agar kompatibel di dalam iframe
-            const tempInput = document.createElement('textarea');
-            tempInput.value = fullText;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            try {
-                document.execCommand('copy');
-                showToast("Teks ucapan berhasil disalin!", "✅");
-            } catch (err) {
-                showToast("Gagal menyalin teks.", "❌");
+            const fallbackCopy = () => {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = shareText;
+                tempInput.style.position = 'fixed';
+                tempInput.style.opacity = '0';
+                document.body.appendChild(tempInput);
+                tempInput.focus();
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('Link & tiket berhasil disalin! Tinggal paste ke chat ✨');
+                } catch (err) {
+                    showToast('Gagal menyalin otomatis, silakan salin manual ya 🙏');
+                }
+                document.body.removeChild(tempInput);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(shareText)
+                    .then(() => showToast('Link & tiket berhasil disalin! Tinggal paste ke chat ✨'))
+                    .catch(() => fallbackCopy());
+            } else {
+                fallbackCopy();
             }
-            document.body.removeChild(tempInput);
         }
 
-        function resetApp() {
-            resetGameUI();
-            goToStep(1);
-        }
-
-        // Fungsi Toast Notification yang halus
-        let toastTimeout = null;
-        function showToast(message, icon = "✨") {
+        // Tampilkan notifikasi toast melayang
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-message').textContent = message;
-            document.getElementById('toast-icon').textContent = icon;
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
 
-            toast.classList.remove('opacity-0', '-translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            if (toastTimeout) clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-4');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
             }, 3000);
+        }
+
+        // Reset aplikasi untuk membuat rencana baru dari Slide 1
+        function resetApp() {
+            try {
+                if (window.location.protocol.startsWith('http') && window.location.origin !== 'null') {
+                    const cleanUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, '', cleanUrl);
+                }
+            } catch (e) {
+                // Abaikan pada mode preview
+            }
+            appState.noClickCount = 0;
+            goToSlide(1);
         }
     </script>
 </body>
